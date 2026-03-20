@@ -1,0 +1,28 @@
+# Java / Maven
+target/
+*.jar
+*.class
+*.war
+
+# Tools and Binaries
+.tools/
+apache-maven-*/
+
+# Environment variables (Secrets)
+.env
+*.env
+*.env.*
+!.env.example
+
+# Visual Studio Code
+.vscode/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Node / Frontend
+node_modules/
+dist/
+dist-ssr/
+build/
