@@ -23,11 +23,31 @@ export interface LoginResponse {
   username: string
   email: string
   status: string
-  tokenType: string
-  accessToken: string
+  otpRequired: boolean
+  otpExpiresInSeconds: number
+  tokenType: string | null
+  accessToken: string | null
   accessTokenExpiresInMs: number
-  refreshToken: string
+  refreshToken: string | null
   refreshTokenExpiresInMs: number
+}
+
+export interface VerifyEmailRequest {
+  email: string
+  otpCode: string
+}
+
+export interface VerifyOtpRequest {
+  usernameOrEmail: string
+  otpCode: string
+}
+
+export interface ResendEmailVerificationRequest {
+  email: string
+}
+
+export interface MessageResponse {
+  message: string
 }
 
 export interface CreateWalletRequest {
@@ -50,6 +70,126 @@ export interface DepositRequest {
   note?: string
 }
 
+export interface CreatePaymentOrderRequest {
+  amount: number
+}
+
+export interface CreatePaymentOrderResponse {
+  orderId: string
+  amount: number
+  currency: string
+  key: string
+}
+
+export interface VerifyPaymentRequest {
+  orderId: string
+  paymentId: string
+  signature: string
+}
+
+export interface VerifyPaymentResponse {
+  status: string
+  message: string
+  updatedBalance: number | null
+}
+
+export interface ProfilePreferencesResponse {
+  emailAlerts: boolean
+  transferAlerts: boolean
+}
+
+export interface UserProfileResponse {
+  userId: string
+  username: string
+  fullName: string
+  email: string
+  emailVerified: boolean
+  profileImageUrl: string | null
+  accountStatus: string
+  accountRestricted: boolean
+  kycStatus: 'PENDING' | 'VERIFIED' | 'REJECTED' | string
+  kycDocumentType: string | null
+  kycDocumentUrl: string | null
+  twoFactorEnabled: boolean
+  createdAt: string
+  preferences: ProfilePreferencesResponse
+}
+
+export interface ContactUpsertRequest {
+  contactName: string
+  contactEmail: string
+}
+
+export interface ContactResponse {
+  id: string
+  contactName: string
+  contactEmail: string
+  createdAt: string
+}
+
+export interface UserSearchItemResponse {
+  userId: string
+  fullName: string
+  email: string
+  profileImageUrl: string | null
+}
+
+export interface UpdateProfileRequest {
+  fullName?: string
+  emailAlerts?: boolean
+  transferAlerts?: boolean
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string
+  newPassword: string
+}
+
+export interface SecuritySettingsResponse {
+  twoFactorEnabled: boolean
+  emailVerified: boolean
+  accountStatus: string
+}
+
+export interface UpdateSecuritySettingsRequest {
+  twoFactorEnabled: boolean
+}
+
+export interface ActiveSessionItemResponse {
+  sessionId: string
+  userAgent: string
+  ipAddress: string
+  lastActiveAt: string
+  current: boolean
+}
+
+export interface KycStatusResponse {
+  status: 'PENDING' | 'VERIFIED' | 'REJECTED' | string
+  documentType: string | null
+  documentUrl: string | null
+  updatedAt: string
+}
+
+export interface KycUploadResponse {
+  status: 'PENDING' | 'VERIFIED' | 'REJECTED' | string
+  documentType: string | null
+  documentUrl: string | null
+  updatedAt: string
+  message: string
+}
+
+export interface KycReviewRequest {
+  status: 'PENDING' | 'VERIFIED' | 'REJECTED'
+}
+
+export interface FileUploadResponse {
+  fileName: string
+  fileUrl: string
+  contentType: string
+  size: number
+  uploadedAt: string
+}
+
 export interface DepositResponse {
   transactionId?: string
   walletId?: string
@@ -62,7 +202,8 @@ export interface DepositResponse {
 }
 
 export interface TransferRequest {
-  toWalletId: string
+  toWalletId?: string
+  receiverEmail?: string
   amount: number
   reference?: string
   note?: string

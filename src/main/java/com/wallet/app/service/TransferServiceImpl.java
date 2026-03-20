@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,79 +43,131 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional
     public TransferResponse transfer(String username, TransferRequest request) {
-        User sender = userRepository.findByUsername(username)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "user not found"));
+        try {
+            User sender = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "user not found"));
 
-        Wallet senderWallet = walletRepository.findByUserId(sender.getId())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "sender wallet not found"));
-
-        UUID senderWalletId = senderWallet.getId();
-        UUID receiverWalletId = request.toWalletId();
-
-        if (senderWalletId.equals(receiverWalletId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "cannot transfer to same wallet");
-        }
-
-        BigDecimal amount = normalizeAmount(request.amount());
-
-        Wallet firstLocked;
-        Wallet secondLocked;
-        boolean senderFirst = senderWalletId.compareTo(receiverWalletId) < 0;
-
-        if (senderFirst) {
-            firstLocked = walletRepository.findByIdForUpdate(senderWalletId)
+            Wallet senderWallet = walletRepository.findByUserId(sender.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "sender wallet not found"));
-            secondLocked = walletRepository.findByIdForUpdate(receiverWalletId)
+
+            UUID senderWalletId = senderWallet.getId();
+            UUID receiverWalletId = resolveReceiverWalletId(sender, request);
+
+            if (senderWalletId.equals(receiverWalletId)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "cannot transfer to same wallet");
+            }
+
+            BigDecimal amount = normalizeAmount(request.amount());
+
+            Wallet firstLocked;
+            Wallet secondLocked;
+            boolean senderFirst = senderWalletId.compareTo(receiverWalletId) < 0;
+
+            if (senderFirst) {
+                firstLocked = walletRepository.findByIdForUpdateNoWait(senderWalletId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "sender wallet not found"));
+                secondLocked = walletRepository.findByIdForUpdateNoWait(receiverWalletId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver wallet not found"));
+            } else {
+                firstLocked = walletRepository.findByIdForUpdateNoWait(receiverWalletId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver wallet not found"));
+                secondLocked = walletRepository.findByIdForUpdateNoWait(senderWalletId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "sender wallet not found"));
+            }
+
+            Wallet lockedSender = senderFirst ? firstLocked : secondLocked;
+            Wallet lockedReceiver = senderFirst ? secondLocked : firstLocked;
+
+            ensureWalletIsActive(lockedSender, "sender wallet is not active");
+            ensureWalletIsActive(lockedReceiver, "receiver wallet is not active");
+
+            if (!lockedSender.getCurrency().equals(lockedReceiver.getCurrency())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "currency mismatch between wallets");
+            }
+
+            if (lockedSender.getBalance().compareTo(amount) < 0) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "insufficient balance");
+            }
+
+            lockedSender.setBalance(lockedSender.getBalance().subtract(amount));
+            lockedReceiver.setBalance(lockedReceiver.getBalance().add(amount));
+
+            Transaction transaction = new Transaction();
+            transaction.setFromWalletId(lockedSender.getId());
+            transaction.setToWalletId(lockedReceiver.getId());
+            transaction.setAmount(amount);
+            transaction.setCurrency(lockedSender.getCurrency());
+            transaction.setTransactionType("TRANSFER");
+            transaction.setStatus("SUCCESS");
+            transaction.setReference(normalizeReference(request.reference()));
+            transaction.setNote(normalizeNote(request.note()));
+            transaction.setCompletedAt(OffsetDateTime.now());
+
+            Transaction savedTransaction = transactionRepository.save(transaction);
+
+            return new TransferResponse(
+                savedTransaction.getId(),
+                lockedSender.getId(),
+                lockedReceiver.getId(),
+                savedTransaction.getAmount(),
+                savedTransaction.getCurrency(),
+                savedTransaction.getStatus(),
+                savedTransaction.getReference(),
+                lockedSender.getBalance(),
+                lockedReceiver.getBalance(),
+                savedTransaction.getCompletedAt()
+            );
+        } catch (ResponseStatusException exception) {
+            throw exception;
+        } catch (PessimisticLockingFailureException exception) {
+            throw new ResponseStatusException(
+                HttpStatus.CONFLICT,
+                "concurrent transfer in progress. please retry",
+                exception
+            );
+        } catch (DataAccessException exception) {
+            throw new ResponseStatusException(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "transfer failed due to database error",
+                exception
+            );
+        }
+    }
+
+    private UUID resolveReceiverWalletId(User sender, TransferRequest request) {
+        UUID requestedWalletId = request.receiverWalletId();
+        String receiverEmail = request.normalizedReceiverEmail();
+
+        if (requestedWalletId == null && receiverEmail == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "receiverWalletId or receiverEmail is required");
+        }
+
+        Wallet walletFromEmail = null;
+        if (receiverEmail != null) {
+            if (receiverEmail.equalsIgnoreCase(sender.getEmail())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "cannot transfer to self");
+            }
+
+            User receiverUser = userRepository.findByEmail(receiverEmail)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver user not found"));
+
+            if (receiverUser.getId().equals(sender.getId())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "cannot transfer to self");
+            }
+
+            walletFromEmail = walletRepository.findByUserId(receiverUser.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver wallet not found"));
-        } else {
-            firstLocked = walletRepository.findByIdForUpdate(receiverWalletId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver wallet not found"));
-            secondLocked = walletRepository.findByIdForUpdate(senderWalletId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "sender wallet not found"));
         }
 
-        Wallet lockedSender = senderFirst ? firstLocked : secondLocked;
-        Wallet lockedReceiver = senderFirst ? secondLocked : firstLocked;
-
-        ensureWalletIsActive(lockedSender, "sender wallet is not active");
-        ensureWalletIsActive(lockedReceiver, "receiver wallet is not active");
-
-        if (!lockedSender.getCurrency().equals(lockedReceiver.getCurrency())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "currency mismatch between wallets");
+        if (requestedWalletId != null && walletFromEmail != null && !requestedWalletId.equals(walletFromEmail.getId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "receiverWalletId does not match receiverEmail");
         }
 
-        if (lockedSender.getBalance().compareTo(amount) < 0) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "insufficient balance");
+        if (walletFromEmail != null) {
+            return walletFromEmail.getId();
         }
 
-        lockedSender.setBalance(lockedSender.getBalance().subtract(amount));
-        lockedReceiver.setBalance(lockedReceiver.getBalance().add(amount));
-
-        Transaction transaction = new Transaction();
-        transaction.setFromWalletId(lockedSender.getId());
-        transaction.setToWalletId(lockedReceiver.getId());
-        transaction.setAmount(amount);
-        transaction.setCurrency(lockedSender.getCurrency());
-        transaction.setTransactionType("TRANSFER");
-        transaction.setStatus("COMPLETED");
-        transaction.setReference(normalizeReference(request.reference()));
-        transaction.setNote(request.note());
-        transaction.setCompletedAt(OffsetDateTime.now());
-
-        Transaction savedTransaction = transactionRepository.save(transaction);
-
-        return new TransferResponse(
-            savedTransaction.getId(),
-            lockedSender.getId(),
-            lockedReceiver.getId(),
-            savedTransaction.getAmount(),
-            savedTransaction.getCurrency(),
-            savedTransaction.getStatus(),
-            savedTransaction.getReference(),
-            lockedSender.getBalance(),
-            lockedReceiver.getBalance(),
-            savedTransaction.getCompletedAt()
-        );
+        return requestedWalletId;
     }
 
     @Override
@@ -152,6 +206,13 @@ public class TransferServiceImpl implements TransferService {
             return "TX-" + UUID.randomUUID().toString().replace("-", "").substring(0, 16).toUpperCase(Locale.ROOT);
         }
         return reference.trim();
+    }
+
+    private String normalizeNote(String note) {
+        if (note == null || note.isBlank()) {
+            return null;
+        }
+        return note.trim();
     }
 
     private void ensureWalletIsActive(Wallet wallet, String message) {

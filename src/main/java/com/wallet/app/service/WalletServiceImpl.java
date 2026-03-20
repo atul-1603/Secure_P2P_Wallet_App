@@ -24,6 +24,8 @@ import com.wallet.app.repository.WalletRepository;
 @Service
 public class WalletServiceImpl implements WalletService {
 
+    private static final String INR_CURRENCY = "INR";
+
     private final WalletRepository walletRepository;
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
@@ -124,19 +126,21 @@ public class WalletServiceImpl implements WalletService {
 
         Wallet wallet = new Wallet();
         wallet.setUserId(userId);
-        wallet.setCurrency("USD");
+        wallet.setCurrency(INR_CURRENCY);
         wallet.setStatus("ACTIVE");
         walletRepository.save(wallet);
     }
 
     private String normalizeCurrency(String currency) {
         if (currency == null || currency.isBlank()) {
-            return "USD";
+            return INR_CURRENCY;
         }
+
         String normalized = currency.trim().toUpperCase(Locale.ROOT);
-        if (!normalized.matches("^[A-Z]{3}$")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "currency must be a 3-letter code");
+        if (!INR_CURRENCY.equals(normalized)) {
+            return INR_CURRENCY;
         }
+
         return normalized;
     }
 

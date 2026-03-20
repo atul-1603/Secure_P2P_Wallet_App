@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import { EmptyState, PageError, PageLoading } from '../../components/ui/page-state'
 import { useHistoryQuery, useWalletQuery } from '../../hooks/useDashboardData'
 import { getApiErrorMessage } from '../../utils/error'
-import { formatCurrency, formatNumber } from '../../utils/format'
+import { formatCurrency } from '../../utils/format'
 
 function getRecentPeriods(count: number) {
   const periods: { key: string; label: string }[] = []
@@ -111,19 +111,19 @@ export default function AnalyticsPage() {
         <Card>
           <CardHeader>
             <CardDescription>Average transfer size</CardDescription>
-            <CardTitle>{formatNumber(averageTicket)}</CardTitle>
+            <CardTitle>{formatCurrency(averageTicket)}</CardTitle>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader>
             <CardDescription>Incoming volume</CardDescription>
-            <CardTitle className="text-emerald-600">+{formatNumber(incoming)}</CardTitle>
+            <CardTitle className="text-emerald-600">+{formatCurrency(incoming)}</CardTitle>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader>
             <CardDescription>Outgoing volume</CardDescription>
-            <CardTitle className="text-rose-600">-{formatNumber(outgoing)}</CardTitle>
+            <CardTitle className="text-rose-600">-{formatCurrency(outgoing)}</CardTitle>
           </CardHeader>
         </Card>
       </section>
@@ -179,7 +179,7 @@ export default function AnalyticsPage() {
           <IncomingOutgoingChart incoming={incoming} outgoing={outgoing} />
           {wallet ? (
             <p className="mt-3 text-sm text-muted-foreground">
-              Current balance: {formatCurrency(wallet.balance, wallet.currency)}
+              Current balance: {formatCurrency(wallet.balance)}
             </p>
           ) : null}
         </CardContent>

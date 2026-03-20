@@ -12,7 +12,7 @@ import { EmptyState, PageError, PageLoading } from '../../components/ui/page-sta
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table'
 import { useHistoryQuery, useWalletQuery } from '../../hooks/useDashboardData'
 import { getApiErrorMessage } from '../../utils/error'
-import { formatCurrency, formatDateTime, formatNumber } from '../../utils/format'
+import { formatCurrency, formatDateTime } from '../../utils/format'
 
 export default function DashboardPage() {
   const walletQuery = useWalletQuery()
@@ -134,7 +134,7 @@ export default function DashboardPage() {
               {wallet ? (
                 <AnimatedNumber
                   value={wallet.balance}
-                  formatter={(value) => formatCurrency(value, wallet.currency)}
+                  formatter={(value) => formatCurrency(value)}
                 />
               ) : '--'}
             </p>
@@ -142,11 +142,11 @@ export default function DashboardPage() {
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="rounded-xl border bg-background p-3">
                 <p className="text-muted-foreground">Incoming</p>
-                <p className="font-semibold text-emerald-600">+{formatNumber(incoming)}</p>
+                <p className="font-semibold text-emerald-600">+{formatCurrency(incoming)}</p>
               </div>
               <div className="rounded-xl border bg-background p-3">
                 <p className="text-muted-foreground">Outgoing</p>
-                <p className="font-semibold text-rose-600">-{formatNumber(outgoing)}</p>
+                <p className="font-semibold text-rose-600">-{formatCurrency(outgoing)}</p>
               </div>
             </div>
           </CardContent>
@@ -200,7 +200,7 @@ export default function DashboardPage() {
                       <TableCell className="whitespace-nowrap text-muted-foreground">{formatDateTime(item.createdAt)}</TableCell>
                       <TableCell>{incomingTx ? 'IN' : 'OUT'}</TableCell>
                       <TableCell className={incomingTx ? 'text-emerald-600' : 'text-rose-600'}>
-                        {incomingTx ? '+' : '-'}{formatNumber(item.amount)} {item.currency}
+                        {incomingTx ? '+' : '-'}{formatCurrency(item.amount)}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline">{item.status}</Badge>

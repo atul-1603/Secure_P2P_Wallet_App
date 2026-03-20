@@ -4,10 +4,12 @@ import {
   CreditCard,
   Download,
   LayoutDashboard,
+  User,
   QrCode,
   Settings,
   Shield,
   ShieldCheck,
+  Users,
   Wallet,
 } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
@@ -17,10 +19,12 @@ const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', to: '/dashboard' },
   { icon: Wallet, label: 'Wallet', to: '/wallet' },
   { icon: ArrowRightLeft, label: 'Send Money', to: '/send-money' },
+  { icon: Users, label: 'Contacts', to: '/contacts' },
   { icon: Download, label: 'Add Money', to: '/add-money' },
   { icon: QrCode, label: 'Receive Money', to: '/receive' },
   { icon: CreditCard, label: 'Transactions', to: '/transactions' },
   { icon: ChartNoAxesCombined, label: 'Analytics', to: '/analytics' },
+  { icon: User, label: 'Profile', to: '/profile' },
   { icon: Shield, label: 'Security', to: '/security' },
   { icon: Settings, label: 'Settings', to: '/settings' },
 ]

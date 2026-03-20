@@ -1,15 +1,21 @@
-export function formatCurrency(amount: number, currency = 'USD') {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-    maximumFractionDigits: 2,
-  }).format(amount)
+const inrCurrencyFormatter = new Intl.NumberFormat('en-IN', {
+  style: 'currency',
+  currency: 'INR',
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 2,
+})
+
+export function formatCurrency(amount: number) {
+  return inrCurrencyFormatter.format(amount)
 }
 
 export function formatDateTime(value: string) {
-  return new Date(value).toLocaleString()
+  return new Date(value).toLocaleString('en-IN', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  })
 }
 
-export function formatNumber(value: number) {
-  return new Intl.NumberFormat('en-US', { maximumFractionDigits: 4 }).format(value)
+export function formatNumber(value: number, maximumFractionDigits = 2) {
+  return new Intl.NumberFormat('en-IN', { maximumFractionDigits }).format(value)
 }

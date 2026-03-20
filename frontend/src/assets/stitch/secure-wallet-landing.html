@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SecureWallet | Fast, Secure, and Smart Payments</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Inter Font -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Lucide Icons CDN (Simplified for HTML use via UMD) -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<style data-purpose="typography">
+    body {
+      font-family: 'Inter', sans-serif;
+      scroll-behavior: smooth;
+    }
+  </style>
+<style data-purpose="animations">
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0px); }
+    }
+    .animate-float {
+      animation: float 6s ease-in-out infinite;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #60a5fa 0%, #a855f7 50%, #22d3ee 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .bg-grid {
+      background-size: 40px 40px;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+    }
+  </style>
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#020617',
+              primary: '#3b82f6',
+              secondary: '#a855f7',
+              accent: '#22d3ee'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-brand-dark text-slate-200 overflow-x-hidden">
+<!-- BEGIN: Navigation -->
+<nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-brand-dark/80 backdrop-blur-md">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-20 items-center">
+<!-- Logo -->
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 bg-gradient-to-tr from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
+<i class="text-white w-6 h-6" data-lucide="shield-check"></i>
+</div>
+<span class="text-2xl font-extrabold tracking-tight text-white">Secure<span class="text-brand-primary">Wallet</span></span>
+</div>
+<!-- Desktop Nav -->
+<div class="hidden md:flex items-center space-x-8 text-sm font-medium">
+<a class="hover:text-brand-accent transition-colors" href="#features">Features</a>
+<a class="hover:text-brand-accent transition-colors" href="#security">Security</a>
+<a class="hover:text-brand-accent transition-colors" href="#how-it-works">How it Works</a>
+<a class="hover:text-brand-accent transition-colors" href="#pricing">Pricing</a>
+</div>
+<!-- CTAs -->
+<div class="flex items-center space-x-4">
+<button class="hidden sm:block text-sm font-semibold hover:text-white transition-colors">Login</button>
+<button class="bg-brand-primary hover:bg-blue-600 text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-brand-primary/20 transition-all">
+            Get Started
+          </button>
+</div>
+</div>
+</div>
+</nav>
+<!-- END: Navigation -->
+<!-- BEGIN: Hero Section -->
+<section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+<!-- Background Decor -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10">
+<div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-primary/20 blur-[120px] rounded-full"></div>
+<div class="absolute bottom-[10%] right-[-10%] w-[30%] h-[30%] bg-brand-secondary/20 blur-[120px] rounded-full"></div>
+</div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center lg:text-left flex flex-col lg:flex-row items-center gap-16">
+<div class="flex-1 space-y-8" data-purpose="hero-content">
+<span class="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-brand-accent text-xs font-bold uppercase tracking-widest">
+          Trusted by 2M+ Users Worldwide
+        </span>
+<h1 class="text-5xl lg:text-7xl font-extrabold text-white leading-[1.1]">
+          Fast, <span class="gradient-text">Secure</span>, and Smart Payments.
+        </h1>
+<p class="text-lg text-slate-400 max-w-2xl mx-auto lg:mx-0">
+          The all-in-one financial dashboard designed for the modern era. Send money, track investments, and secure your assets with military-grade encryption.
+        </p>
+<div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+<button class="w-full sm:w-auto px-8 py-4 bg-white text-brand-dark rounded-xl font-bold hover:scale-105 transition-transform flex items-center justify-center gap-2">
+            Open Free Account <i class="w-5 h-5" data-lucide="arrow-right"></i>
+</button>
+<button class="w-full sm:w-auto px-8 py-4 bg-white/5 border border-white/10 rounded-xl font-bold hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
+<i class="w-5 h-5" data-lucide="play-circle"></i> Watch Demo
+          </button>
+</div>
+</div>
+<!-- 3D Wallet Graphic Simulation -->
+<div class="flex-1 relative" data-purpose="hero-graphic">
+<div class="relative w-full max-w-md mx-auto aspect-square flex items-center justify-center">
+<!-- Main Card -->
+<div class="animate-float glass-card w-80 h-48 rounded-2xl p-6 relative z-20 shadow-2xl">
+<div class="flex justify-between items-start">
+<i class="w-10 h-10 text-yellow-500" data-lucide="chip"></i>
+<span class="text-white/60 font-mono italic">Secure Platinum</span>
+</div>
+<div class="mt-8 space-y-4">
+<div class="text-2xl font-mono tracking-widest text-white">**** **** **** 8824</div>
+<div class="flex justify-between items-end">
+<span class="text-xs uppercase opacity-60">Alex Johnson</span>
+<span class="text-xs uppercase opacity-60">12/28</span>
+</div>
+</div>
+</div>
+<!-- Secondary Decorative Cards -->
+<div class="absolute top-10 -right-4 w-72 h-44 bg-gradient-to-br from-brand-secondary to-purple-900 rounded-2xl -z-10 opacity-30 rotate-12 blur-[2px]"></div>
+<div class="absolute bottom-10 -left-4 w-72 h-44 bg-gradient-to-br from-brand-accent to-brand-primary rounded-2xl -z-10 opacity-30 -rotate-12 blur-[2px]"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Hero Section -->
+<!-- BEGIN: Features Section -->
+<section class="py-24 relative bg-grid" id="features">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-16 space-y-4">
+<h2 class="text-3xl lg:text-5xl font-bold text-white">Powerful Features</h2>
+<p class="text-slate-400">Everything you need to manage your finances in one place.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Feature 1 -->
+<div class="group p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-brand-primary/50 transition-all hover:-translate-y-2">
+<div class="w-12 h-12 bg-brand-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-primary transition-colors">
+<i class="text-brand-primary group-hover:text-white w-6 h-6" data-lucide="zap"></i>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">Instant Transfers</h3>
+<p class="text-slate-400 text-sm leading-relaxed">Send and receive funds globally in seconds with zero hidden fees.</p>
+</div>
+<!-- Feature 2 -->
+<div class="group p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-brand-secondary/50 transition-all hover:-translate-y-2">
+<div class="w-12 h-12 bg-brand-secondary/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-secondary transition-colors">
+<i class="text-brand-secondary group-hover:text-white w-6 h-6" data-lucide="shield"></i>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">OTP Security</h3>
+<p class="text-slate-400 text-sm leading-relaxed">Multi-factor authentication for every transaction to keep you safe.</p>
+</div>
+<!-- Feature 3 -->
+<div class="group p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-brand-accent/50 transition-all hover:-translate-y-2">
+<div class="w-12 h-12 bg-brand-accent/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-accent transition-colors">
+<i class="text-brand-accent group-hover:text-white w-6 h-6" data-lucide="qr-code"></i>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">QR Payments</h3>
+<p class="text-slate-400 text-sm leading-relaxed">Pay at millions of stores worldwide with just a quick scan.</p>
+</div>
+<!-- Feature 4 -->
+<div class="group p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-green-500/50 transition-all hover:-translate-y-2">
+<div class="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-green-500 transition-colors">
+<i class="text-green-500 group-hover:text-white w-6 h-6" data-lucide="bell"></i>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">Real-time Alerts</h3>
+<p class="text-slate-400 text-sm leading-relaxed">Stay updated with push notifications for every activity.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Features Section -->
+<!-- BEGIN: Security High-Impact Section -->
+<section class="py-24 bg-brand-dark overflow-hidden" id="security">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="glass-card rounded-[3rem] p-8 lg:p-16 flex flex-col lg:flex-row items-center gap-16 relative overflow-hidden border-brand-primary/20">
+<!-- Glow effect behind content -->
+<div class="absolute -top-24 -left-24 w-96 h-96 bg-brand-primary/20 blur-[100px] rounded-full"></div>
+<div class="flex-1 space-y-6 relative z-10">
+<div class="inline-flex items-center gap-2 text-brand-accent font-bold text-sm tracking-widest uppercase">
+<i class="w-4 h-4" data-lucide="lock"></i> Military Grade Security
+          </div>
+<h2 class="text-4xl lg:text-5xl font-extrabold text-white">Your security is our <span class="text-brand-primary">top priority.</span></h2>
+<p class="text-slate-400 text-lg leading-relaxed">
+            We use end-to-end encryption (AES-256) for all data. Your funds are protected by biometric verification and decentralized security protocols.
+          </p>
+<ul class="space-y-4">
+<li class="flex items-center gap-3 text-white font-medium">
+<i class="text-brand-accent w-5 h-5" data-lucide="check-circle-2"></i> 256-bit AES Encryption
+            </li>
+<li class="flex items-center gap-3 text-white font-medium">
+<i class="text-brand-accent w-5 h-5" data-lucide="check-circle-2"></i> Biometric Login (FaceID/TouchID)
+            </li>
+<li class="flex items-center gap-3 text-white font-medium">
+<i class="text-brand-accent w-5 h-5" data-lucide="check-circle-2"></i> Fraud Protection Algorithms
+            </li>
+</ul>
+</div>
+<div class="flex-1 flex justify-center relative">
+<div class="relative group">
+<div class="absolute inset-0 bg-brand-primary blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+<i class="w-64 h-64 text-brand-primary/80 relative z-10 animate-pulse" data-lucide="shield-check"></i>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Security High-Impact Section -->
+<!-- BEGIN: Dashboard Mockup -->
+<section class="py-24">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-16">
+<h2 class="text-3xl lg:text-5xl font-bold text-white mb-4">Master your money</h2>
+<p class="text-slate-400">Intelligent analytics that help you grow your wealth.</p>
+</div>
+<div class="relative max-w-5xl mx-auto">
+<!-- Dashboard Background -->
+<div class="glass-card rounded-3xl overflow-hidden shadow-2xl border-white/5">
+<div class="flex h-[500px]">
+<!-- Sidebar Sidebar -->
+<div class="w-16 sm:w-64 border-r border-white/10 hidden sm:flex flex-col p-6 space-y-8">
+<div class="space-y-4">
+<div class="h-4 w-32 bg-white/10 rounded"></div>
+<div class="h-4 w-40 bg-white/10 rounded"></div>
+<div class="h-4 w-24 bg-white/10 rounded"></div>
+</div>
+<div class="mt-auto">
+<div class="h-10 w-full bg-brand-primary/20 border border-brand-primary/30 rounded-xl"></div>
+</div>
+</div>
+<!-- Content Area -->
+<div class="flex-1 p-8 overflow-hidden relative">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h4 class="text-slate-400 text-sm font-medium">Total Balance</h4>
+<div class="text-4xl font-bold text-white">₹42,920.50</div>
+</div>
+<div class="flex gap-2">
+<div class="w-12 h-12 rounded-full bg-white/10"></div>
+<div class="w-12 h-12 rounded-full bg-white/10"></div>
+</div>
+</div>
+<!-- Mock Chart Area -->
+<div class="flex items-end gap-2 h-40">
+<div class="flex-1 bg-brand-primary/20 h-1/2 rounded-t-lg"></div>
+<div class="flex-1 bg-brand-primary/40 h-2/3 rounded-t-lg"></div>
+<div class="flex-1 bg-brand-primary/60 h-full rounded-t-lg"></div>
+<div class="flex-1 bg-brand-primary/20 h-1/3 rounded-t-lg"></div>
+<div class="flex-1 bg-brand-primary/80 h-3/4 rounded-t-lg"></div>
+<div class="flex-1 bg-brand-primary/40 h-1/2 rounded-t-lg"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Cards -->
+<div class="absolute -top-10 -right-4 sm:-right-10 glass-card p-6 rounded-2xl w-64 shadow-2xl animate-float">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-10 h-10 rounded-full bg-brand-accent/20 flex items-center justify-center">
+<i class="text-brand-accent w-5 h-5" data-lucide="trending-up"></i>
+</div>
+<div>
+<div class="text-xs text-slate-400 uppercase font-bold tracking-tight">Earnings</div>
+<div class="text-lg font-bold text-white">+12.5%</div>
+</div>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-brand-accent w-3/4"></div>
+</div>
+</div>
+<div class="absolute -bottom-6 -left-4 sm:-left-10 glass-card p-6 rounded-2xl w-72 shadow-2xl" style="animation: float 5s ease-in-out infinite reverse;">
+<div class="text-xs text-slate-400 uppercase font-bold mb-4">Recent Transactions</div>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded bg-white/10"></div>
+<span class="text-sm font-medium">Apple Store</span>
+</div>
+<span class="text-sm text-red-400">-₹99.00</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded bg-white/10"></div>
+<span class="text-sm font-medium">Starbucks</span>
+</div>
+<span class="text-sm text-red-400">-₹12.50</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Dashboard Mockup -->
+<!-- BEGIN: How It Works -->
+<section class="py-24 bg-brand-dark/50" id="how-it-works">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-20">
+<h2 class="text-3xl lg:text-5xl font-bold text-white">Getting started is easy</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+<!-- Connecting Line (Desktop) -->
+<div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-brand-primary/0 via-brand-primary/20 to-brand-primary/0 -z-10"></div>
+<!-- Step 1 -->
+<div class="text-center space-y-6">
+<div class="w-16 h-16 bg-brand-dark border-2 border-brand-primary rounded-full mx-auto flex items-center justify-center text-2xl font-black text-brand-primary shadow-xl shadow-brand-primary/20">1</div>
+<h4 class="text-xl font-bold text-white">Create Account</h4>
+<p class="text-slate-400">Sign up in under 2 minutes with just your email and phone number.</p>
+</div>
+<!-- Step 2 -->
+<div class="text-center space-y-6">
+<div class="w-16 h-16 bg-brand-dark border-2 border-brand-secondary rounded-full mx-auto flex items-center justify-center text-2xl font-black text-brand-secondary shadow-xl shadow-brand-secondary/20">2</div>
+<h4 class="text-xl font-bold text-white">Link Bank</h4>
+<p class="text-slate-400">Securely connect your cards and bank accounts with Plaid integration.</p>
+</div>
+<!-- Step 3 -->
+<div class="text-center space-y-6">
+<div class="w-16 h-16 bg-brand-dark border-2 border-brand-accent rounded-full mx-auto flex items-center justify-center text-2xl font-black text-brand-accent shadow-xl shadow-brand-accent/20">3</div>
+<h4 class="text-xl font-bold text-white">Start Transacting</h4>
+<p class="text-slate-400">Send money, pay bills, and track your spending in real-time.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: How It Works -->
+<!-- BEGIN: Trust Section -->
+<section class="py-24">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+<h2 class="text-2xl font-bold text-white mb-12">Loved by thousands of companies</h2>
+<div class="flex flex-wrap justify-center gap-12 opacity-40 grayscale contrast-125">
+<span class="text-3xl font-black tracking-tighter">FINTECH</span>
+<span class="text-3xl font-black tracking-tighter">VERGE</span>
+<span class="text-3xl font-black tracking-tighter">NEXUS</span>
+<span class="text-3xl font-black tracking-tighter">PRISM</span>
+<span class="text-3xl font-black tracking-tighter">STRATUM</span>
+</div>
+</div>
+</section>
+<!-- END: Trust Section -->
+<!-- BEGIN: Footer -->
+<footer class="pt-24 pb-12 border-t border-white/5">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-16">
+<div class="col-span-2">
+<div class="flex items-center gap-2 mb-6">
+<div class="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center">
+<i class="text-white w-5 h-5" data-lucide="shield-check"></i>
+</div>
+<span class="text-xl font-extrabold text-white">SecureWallet</span>
+</div>
+<p class="text-slate-400 max-w-xs mb-8">
+            The future of digital finance. Safe, simple, and smarter for everyone.
+          </p>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-primary transition-colors" href="#">
+<i class="w-5 h-5" data-lucide="twitter"></i>
+</a>
+<a class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-primary transition-colors" href="#">
+<i class="w-5 h-5" data-lucide="instagram"></i>
+</a>
+<a class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-primary transition-colors" href="#">
+<i class="w-5 h-5" data-lucide="linkedin"></i>
+</a>
+</div>
+</div>
+<div>
+<h5 class="text-white font-bold mb-6">Product</h5>
+<ul class="space-y-4 text-slate-400 text-sm">
+<li><a class="hover:text-white transition-colors" href="#">Personal</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Business</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Crypto</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Security</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-white font-bold mb-6">Company</h5>
+<ul class="space-y-4 text-slate-400 text-sm">
+<li><a class="hover:text-white transition-colors" href="#">About Us</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Careers</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Press</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Contact</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-white font-bold mb-6">Legal</h5>
+<ul class="space-y-4 text-slate-400 text-sm">
+<li><a class="hover:text-white transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Terms of Service</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Cookie Policy</a></li>
+</ul>
+</div>
+</div>
+<div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 text-xs">
+<p>© 2024 SecureWallet Inc. All rights reserved.</p>
+<div class="flex gap-8">
+<span>Status: <span class="text-green-500">All systems functional</span></span>
+<a class="hover:text-white" href="#">Back to top</a>
+</div>
+</div>
+</div>
+</footer>
+<!-- END: Footer -->
+<!-- BEGIN: Scripts -->
+<script data-purpose="init-lucide">
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+<!-- END: Scripts -->
+</body></html>

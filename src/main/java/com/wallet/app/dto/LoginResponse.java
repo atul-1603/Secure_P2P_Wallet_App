@@ -8,6 +8,8 @@ public record LoginResponse(
     String username,
     String email,
     String status,
+    boolean otpRequired,
+    long otpExpiresInSeconds,
     String tokenType,
     String accessToken,
     long accessTokenExpiresInMs,

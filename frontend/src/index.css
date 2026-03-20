@@ -23,6 +23,25 @@
     --radius: 0.75rem;
   }
 
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+  }
+
   * {
     @apply border-border;
   }
@@ -37,5 +56,50 @@
 
   #root {
     min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-20px);
+    }
+
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .glass-card {
+    @apply border border-slate-200 bg-white/90;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .dark .glass-card {
+    @apply border-white/10 bg-white/5;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #60a5fa 0%, #a855f7 50%, #22d3ee 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .bg-grid {
+    background-size: 40px 40px;
+    background-image: radial-gradient(circle, rgb(2 6 23 / 0.08) 1px, transparent 1px);
+  }
+
+  .dark .bg-grid {
+    background-image: radial-gradient(circle, rgb(255 255 255 / 0.05) 1px, transparent 1px);
   }
 }

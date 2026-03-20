@@ -14,7 +14,9 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd --system app \
-    && useradd --system --gid app app
+  && useradd --system --gid app app \
+  && mkdir -p /app/uploads \
+  && chown -R app:app /app
 
 COPY --from=builder --chown=app:app /workspace/target/*.jar /app/app.jar
 

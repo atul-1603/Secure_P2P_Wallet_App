@@ -5,19 +5,74 @@ import { Alert } from '../../components/ui/alert'
 import { Badge } from '../../components/ui/badge'
 import { Button } from '../../components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
-import { useAuth } from '../../auth/AuthContext'
+import { Input } from '../../components/ui/input'
+import { PageError, PageLoading } from '../../components/ui/page-state'
+import { useToast } from '../../components/ui/toast'
+import {
+  useChangePasswordMutation,
+  useProfileQuery,
+  useProfileSessionsQuery,
+  useUpdateSecurityMutation,
+} from '../../hooks/useProfileData'
+import { getApiErrorMessage } from '../../utils/error'
+import { formatDateTime } from '../../utils/format'
 
 export default function SecurityPage() {
-  const { user } = useAuth()
-  const [scanRunning, setScanRunning] = useState(false)
-  const [scanMessage, setScanMessage] = useState<string | null>(null)
+  const profileQuery = useProfileQuery()
+  const sessionsQuery = useProfileSessionsQuery()
+  const updateSecurityMutation = useUpdateSecurityMutation()
+  const changePasswordMutation = useChangePasswordMutation()
+  const { showError, showSuccess } = useToast()
 
-  async function runSecurityCheck() {
-    setScanRunning(true)
-    setScanMessage(null)
-    await new Promise((resolve) => setTimeout(resolve, 900))
-    setScanRunning(false)
-    setScanMessage('No critical security anomalies detected in your current account posture.')
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+
+  const loading = profileQuery.isLoading || sessionsQuery.isLoading
+  const error = [profileQuery.error, sessionsQuery.error]
+    .filter(Boolean)
+    .map((item) => getApiErrorMessage(item, 'Unable to load security controls'))[0]
+
+  const profile = profileQuery.data
+  const sessions = sessionsQuery.data ?? []
+
+  async function toggleTwoFactor(nextValue: boolean) {
+    try {
+      await updateSecurityMutation.mutateAsync({ twoFactorEnabled: nextValue })
+      showSuccess(`Two-factor authentication ${nextValue ? 'enabled' : 'disabled'}.`)
+    } catch (mutationError) {
+      showError(getApiErrorMessage(mutationError, 'Unable to update security settings'))
+    }
+  }
+
+  async function handlePasswordChange() {
+    if (!currentPassword || !newPassword) {
+      showError('Current and new passwords are required.')
+      return
+    }
+
+    try {
+      await changePasswordMutation.mutateAsync({
+        currentPassword,
+        newPassword,
+      })
+
+      setCurrentPassword('')
+      setNewPassword('')
+      showSuccess('Password updated successfully.')
+    } catch (mutationError) {
+      showError(getApiErrorMessage(mutationError, 'Unable to update password'))
+    }
+  }
+
+  if (loading) {
+    return <PageLoading title="Loading security controls…" />
+  }
+
+  if (error || !profile) {
+    return <PageError message={error ?? 'Unable to load security details'} onRetry={() => {
+      void profileQuery.refetch()
+      void sessionsQuery.refetch()
+    }} />
   }
 
   return (
@@ -34,8 +89,6 @@ export default function SecurityPage() {
         </p>
       </section>
 
-      {scanMessage ? <Alert className="border-emerald-200 bg-emerald-50 text-emerald-700">{scanMessage}</Alert> : null}
-
       <section className="grid gap-6 lg:grid-cols-3">
         <Card>
           <CardHeader>
@@ -47,16 +100,20 @@ export default function SecurityPage() {
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="flex items-center justify-between">
-              <span>User</span>
-              <Badge variant="outline">{user?.username ?? 'Unknown'}</Badge>
+              <span>Account</span>
+              <Badge variant="outline">{profile.username}</Badge>
             </div>
             <div className="flex items-center justify-between">
-              <span>JWT Protection</span>
-              <Badge variant="success">Active</Badge>
+              <span>Email Verification</span>
+              <Badge variant={profile.emailVerified ? 'success' : 'outline'}>
+                {profile.emailVerified ? 'Verified' : 'Pending'}
+              </Badge>
             </div>
             <div className="flex items-center justify-between">
-              <span>Route Guards</span>
-              <Badge variant="success">Enabled</Badge>
+              <span>2FA (OTP)</span>
+              <Badge variant={profile.twoFactorEnabled ? 'success' : 'outline'}>
+                {profile.twoFactorEnabled ? 'Enabled' : 'Disabled'}
+              </Badge>
             </div>
           </CardContent>
         </Card>
@@ -69,10 +126,27 @@ export default function SecurityPage() {
             </div>
             <CardDescription>Recommended controls for production-grade safety.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <div className="rounded-xl border bg-background p-3">Use long unique passwords with periodic rotation.</div>
-            <div className="rounded-xl border bg-background p-3">Enable least-privilege policies for backend secrets.</div>
-            <div className="rounded-xl border bg-background p-3">Audit login and transfer events regularly.</div>
+          <CardContent className="space-y-4 text-sm">
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Current Password</label>
+              <Input
+                type="password"
+                value={currentPassword}
+                onChange={(event) => setCurrentPassword(event.target.value)}
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-sm font-medium">New Password</label>
+              <Input
+                type="password"
+                value={newPassword}
+                onChange={(event) => setNewPassword(event.target.value)}
+              />
+            </div>
+            <Button className="w-full" onClick={() => void handlePasswordChange()} disabled={changePasswordMutation.isPending}>
+              <KeyRound className="mr-1 h-4 w-4" />
+              {changePasswordMutation.isPending ? 'Updating…' : 'Change Password'}
+            </Button>
           </CardContent>
         </Card>
 
@@ -85,16 +159,42 @@ export default function SecurityPage() {
             <CardDescription>Operational checks for active sessions.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button className="w-full" disabled={scanRunning} onClick={() => void runSecurityCheck()}>
-              {scanRunning ? 'Running checks…' : 'Run Security Check'}
+            <div className="rounded-xl border bg-background p-3 text-xs text-muted-foreground">
+              {sessions.length} active session{sessions.length === 1 ? '' : 's'} detected.
+            </div>
+            {sessions.map((session) => (
+              <div key={session.sessionId} className="rounded-xl border bg-background p-3 text-xs">
+                <p className="font-medium text-foreground">{session.current ? 'Current device' : session.sessionId}</p>
+                <p className="mt-1 line-clamp-1 text-muted-foreground">{session.userAgent}</p>
+                <p className="mt-1 text-muted-foreground">{session.ipAddress}</p>
+                <p className="mt-1 text-muted-foreground">{formatDateTime(session.lastActiveAt)}</p>
+              </div>
+            ))}
+            <Button
+              className="w-full"
+              onClick={() => void toggleTwoFactor(true)}
+              disabled={updateSecurityMutation.isPending || profile.twoFactorEnabled}
+            >
+              Enable 2FA
             </Button>
-            <Button className="w-full" variant="outline">
+            <Button
+              className="w-full"
+              variant="outline"
+              onClick={() => void toggleTwoFactor(false)}
+              disabled={updateSecurityMutation.isPending || !profile.twoFactorEnabled}
+            >
               <Lock className="mr-1 h-4 w-4" />
-              Review Auth Policies
+              Disable 2FA
             </Button>
           </CardContent>
         </Card>
       </section>
+
+      {profile.accountRestricted ? (
+        <Alert className="border-amber-200 bg-amber-50 text-amber-700">
+          Account is currently restricted. Complete KYC and contact support for reactivation.
+        </Alert>
+      ) : null}
     </motion.div>
   )
 }

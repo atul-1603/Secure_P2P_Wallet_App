@@ -11,16 +11,23 @@ import TransactionsPage from './pages/Transactions'
 import AnalyticsPage from './pages/Analytics'
 import SecurityPage from './pages/Security'
 import SettingsPage from './pages/Settings'
+import ProfilePage from './pages/Profile'
+import ContactsPage from './pages/Contacts'
 import LoginPage from './pages/Login'
 import RegisterPage from './pages/Register'
+import VerifyOtpPage from './pages/VerifyOtp'
+import HomePage from './pages/Home'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<HomePage />} />
+
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/verify-otp" element={<VerifyOtpPage />} />
         </Route>
 
         <Route
@@ -38,11 +45,13 @@ function App() {
           <Route path="/receive-money" element={<ReceiveMoneyPage />} />
           <Route path="/transactions" element={<TransactionsPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/contacts" element={<ContactsPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/security" element={<SecurityPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>
 
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   )

@@ -4,13 +4,14 @@ import { apiClient } from './apiClient'
 export const transactionService = {
   async transfer(payload: TransferRequest): Promise<TransferResponse> {
     const requestPayload = {
-      toWalletId: payload.toWalletId,
+      receiverWalletId: payload.toWalletId,
+      receiverEmail: payload.receiverEmail,
       amount: payload.amount,
       reference: payload.reference,
       note: payload.note,
     }
 
-    const response = await apiClient.post<TransferResponse>('/transactions/transfer', requestPayload)
+    const response = await apiClient.post<TransferResponse>('/wallet/transfer', requestPayload)
     return response.data
   },
 

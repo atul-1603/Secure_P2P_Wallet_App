@@ -1,5 +1,5 @@
 import type { TransactionHistoryItem, WalletResponse } from '../../types/api'
-import { formatCurrency, formatNumber } from '../../utils/format'
+import { formatCurrency } from '../../utils/format'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Skeleton } from '../ui/skeleton'
 
@@ -43,7 +43,7 @@ export function WalletBalanceCards({ wallet, history, loading }: WalletBalanceCa
         </CardHeader>
         <CardContent>
           <p className="text-2xl font-bold text-foreground">
-            {wallet ? formatCurrency(wallet.balance, wallet.currency) : '--'}
+            {wallet ? formatCurrency(wallet.balance) : '--'}
           </p>
           <p className="text-xs text-muted-foreground">{wallet?.walletId ?? 'Create wallet to start transacting'}</p>
         </CardContent>
@@ -54,7 +54,7 @@ export function WalletBalanceCards({ wallet, history, loading }: WalletBalanceCa
           <CardTitle className="text-sm text-muted-foreground">Incoming Volume</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-2xl font-bold text-emerald-600">+{formatNumber(incoming)}</p>
+          <p className="text-2xl font-bold text-emerald-600">+{formatCurrency(incoming)}</p>
           <p className="text-xs text-muted-foreground">Credits received</p>
         </CardContent>
       </Card>
@@ -64,7 +64,7 @@ export function WalletBalanceCards({ wallet, history, loading }: WalletBalanceCa
           <CardTitle className="text-sm text-muted-foreground">Outgoing Volume</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-2xl font-bold text-rose-600">-{formatNumber(outgoing)}</p>
+          <p className="text-2xl font-bold text-rose-600">-{formatCurrency(outgoing)}</p>
           <p className="text-xs text-muted-foreground">Debits sent</p>
         </CardContent>
       </Card>

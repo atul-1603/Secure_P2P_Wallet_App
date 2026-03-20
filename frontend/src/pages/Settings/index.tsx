@@ -8,7 +8,6 @@ import { Input } from '../../components/ui/input'
 
 type PreferenceState = {
   displayName: string
-  defaultCurrency: string
   emailAlerts: boolean
   transferAlerts: boolean
 }
@@ -16,7 +15,6 @@ type PreferenceState = {
 export default function SettingsPage() {
   const [preferences, setPreferences] = useState<PreferenceState>({
     displayName: 'Wallet User',
-    defaultCurrency: 'USD',
     emailAlerts: true,
     transferAlerts: true,
   })
@@ -53,7 +51,7 @@ export default function SettingsPage() {
               <CardTitle className="text-base">Profile Preferences</CardTitle>
               <SlidersHorizontal className="h-4 w-4 text-primary" />
             </div>
-            <CardDescription>Control naming and settlement defaults.</CardDescription>
+            <CardDescription>Control naming and notification defaults.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-1">
@@ -64,18 +62,8 @@ export default function SettingsPage() {
               />
             </div>
 
-            <div className="space-y-1">
-              <label className="text-sm font-medium">Default Currency</label>
-              <select
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={preferences.defaultCurrency}
-                onChange={(event) => setPreferences((value) => ({ ...value, defaultCurrency: event.target.value }))}
-              >
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="GBP">GBP</option>
-                <option value="INR">INR</option>
-              </select>
+            <div className="rounded-xl border bg-background p-3 text-xs text-muted-foreground">
+              Settlement currency is standardized platform-wide to INR.
             </div>
           </CardContent>
         </Card>

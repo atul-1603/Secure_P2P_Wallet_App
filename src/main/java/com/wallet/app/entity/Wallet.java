@@ -42,7 +42,7 @@ public class Wallet {
     @Pattern(regexp = "^[A-Z]{3}$")
     @Size(min = 3, max = 3)
     @Column(nullable = false, length = 3)
-    private String currency = "USD";
+    private String currency = "INR";
 
     @NotNull
     @Size(max = 20)
@@ -66,7 +66,7 @@ public class Wallet {
             balance = new BigDecimal("0.0000");
         }
         if (currency == null || currency.isBlank()) {
-            currency = "USD";
+            currency = "INR";
         }
         if (status == null || status.isBlank()) {
             status = "ACTIVE";

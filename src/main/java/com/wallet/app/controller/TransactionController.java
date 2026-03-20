@@ -19,7 +19,7 @@ import com.wallet.app.service.TransferService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/transactions")
+@RequestMapping({"/transactions", "/wallet"})
 public class TransactionController {
 
     private final TransferService transferService;

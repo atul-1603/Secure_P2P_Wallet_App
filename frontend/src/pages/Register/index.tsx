@@ -25,8 +25,8 @@ const registerSchema = z
 type RegisterFormValues = z.infer<typeof registerSchema>
 
 export default function RegisterPage() {
-  const { isAuthenticated, register: registerUser, login } = useAuth()
-  const { showError } = useToast()
+  const { isAuthenticated, register: registerUser } = useAuth()
+  const { showError, showSuccess } = useToast()
   const [submitError, setSubmitError] = useState<string | null>(null)
   const navigate = useNavigate()
 
@@ -58,12 +58,15 @@ export default function RegisterPage() {
         password: values.password,
       })
 
-      await login({
-        usernameOrEmail: values.username,
-        password: values.password,
+      showSuccess('Registration successful. OTP sent to your email.')
+      navigate('/verify-otp', {
+        replace: true,
+        state: {
+          flow: 'register',
+          email: values.email,
+          expiresInSeconds: 300,
+        },
       })
-
-      navigate('/dashboard', { replace: true })
     } catch (error) {
       const message = getApiErrorMessage(error, 'Unable to register')
       setSubmitError(message)
@@ -114,6 +117,12 @@ export default function RegisterPage() {
         Already have an account?{' '}
         <Link className="font-medium text-primary hover:underline" to="/login">
           Sign in
+        </Link>
+      </p>
+
+      <p className="text-xs text-muted-foreground">
+        <Link className="font-medium text-primary hover:underline" to="/">
+          Back to home
         </Link>
       </p>
     </div>

@@ -1,6 +1,7 @@
 import { Bell, LogOut, Menu } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import { Button } from '../ui/button'
+import { ThemeToggle } from '../ui/theme-toggle'
 
 type TopNavProps = {
   username?: string
@@ -12,11 +13,13 @@ const routeTitleMap: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/wallet': 'Wallet',
   '/send-money': 'Send Money',
+  '/contacts': 'Contacts',
   '/add-money': 'Add Money',
   '/receive': 'Receive Money',
   '/receive-money': 'Receive Money',
   '/transactions': 'Transactions',
   '/analytics': 'Analytics',
+  '/profile': 'Profile',
   '/security': 'Security',
   '/settings': 'Settings',
 }
@@ -38,6 +41,7 @@ export function TopNav({ username, onLogout, onToggleSidebar }: TopNavProps) {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4">
+        <ThemeToggle variant="ghost" />
         <Button variant="ghost" size="icon" aria-label="Notifications">
           <Bell className="h-4 w-4" />
         </Button>

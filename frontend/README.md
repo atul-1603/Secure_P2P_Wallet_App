@@ -40,6 +40,8 @@ The backend contracts remain unchanged:
 
 - `POST /auth/register`
 - `POST /auth/login`
+- `POST /auth/verify-email`
+- `POST /auth/verify-otp`
 - `GET /wallets/me`
 - `POST /wallets/me`
 - `POST /transactions/transfer`

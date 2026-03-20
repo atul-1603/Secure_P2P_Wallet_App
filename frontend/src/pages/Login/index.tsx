@@ -44,8 +44,23 @@ export default function LoginPage() {
     setSubmitError(null)
 
     try {
-      await login(values)
+      const response = await login(values)
       const redirectTo = (location.state as { from?: string } | null)?.from ?? '/dashboard'
+
+      if (response.otpRequired) {
+        navigate('/verify-otp', {
+          replace: true,
+          state: {
+            flow: 'login',
+            usernameOrEmail: values.usernameOrEmail,
+            password: values.password,
+            from: redirectTo,
+            expiresInSeconds: response.otpExpiresInSeconds,
+          },
+        })
+        return
+      }
+
       navigate(redirectTo, { replace: true })
     } catch (error) {
       const message = getApiErrorMessage(error, 'Unable to login')
@@ -85,6 +100,12 @@ export default function LoginPage() {
         Don&apos;t have an account?{' '}
         <Link className="font-medium text-primary hover:underline" to="/register">
           Create one
+        </Link>
+      </p>
+
+      <p className="text-xs text-muted-foreground">
+        <Link className="font-medium text-primary hover:underline" to="/">
+          Back to home
         </Link>
       </p>
     </div>

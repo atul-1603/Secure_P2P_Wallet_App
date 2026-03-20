@@ -9,7 +9,7 @@ import { EmptyState, PageError, PageLoading } from '../../components/ui/page-sta
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table'
 import { useHistoryQuery, useWalletQuery } from '../../hooks/useDashboardData'
 import { getApiErrorMessage } from '../../utils/error'
-import { formatDateTime, formatNumber } from '../../utils/format'
+import { formatCurrency, formatDateTime } from '../../utils/format'
 
 type DirectionFilter = 'ALL' | 'IN' | 'OUT'
 
@@ -181,7 +181,7 @@ export default function TransactionsPage() {
                         <TableCell className="whitespace-nowrap text-muted-foreground">{formatDateTime(item.createdAt)}</TableCell>
                         <TableCell>{incomingTx ? 'IN' : 'OUT'}</TableCell>
                         <TableCell className={incomingTx ? 'text-emerald-600' : 'text-rose-600'}>
-                          {incomingTx ? '+' : '-'}{formatNumber(item.amount)} {item.currency}
+                          {incomingTx ? '+' : '-'}{formatCurrency(item.amount)}
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline">{item.status}</Badge>

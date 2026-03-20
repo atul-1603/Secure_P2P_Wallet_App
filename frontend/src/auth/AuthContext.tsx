@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
 import { authService } from '../services/auth.service'
 import { tokenStore } from '../services/tokenStore'
-import type { AuthResponse, LoginRequest, LoginResponse, RegisterRequest } from '../types/api'
+import type { AuthResponse, LoginRequest, LoginResponse, RegisterRequest, VerifyOtpRequest } from '../types/api'
 
 type AuthUser = {
   userId: string
@@ -14,6 +14,7 @@ type AuthContextValue = {
   user: AuthUser | null
   isAuthenticated: boolean
   login: (payload: LoginRequest) => Promise<LoginResponse>
+  verifyLoginOtp: (payload: VerifyOtpRequest) => Promise<LoginResponse>
   register: (payload: RegisterRequest) => Promise<AuthResponse>
   logout: () => void
 }
@@ -78,6 +79,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function login(payload: LoginRequest): Promise<LoginResponse> {
     const response = await authService.login(payload)
 
+    if (response.otpRequired) {
+      return response
+    }
+
+    if (!response.accessToken || !response.refreshToken) {
+      throw new Error('Missing tokens in login response')
+    }
+
+    const authenticatedUser: AuthUser = {
+      userId: response.userId,
+      username: response.username,
+      email: response.email,
+      status: response.status,
+    }
+
+    tokenStore.setTokens(response.accessToken, response.refreshToken)
+    setAccessToken(response.accessToken)
+    setUser(authenticatedUser)
+    setStoredUser(authenticatedUser)
+
+    return response
+  }
+
+  async function verifyLoginOtp(payload: VerifyOtpRequest): Promise<LoginResponse> {
+    const response = await authService.verifyLoginOtp(payload)
+
+    if (!response.accessToken || !response.refreshToken) {
+      throw new Error('Missing tokens in OTP verification response')
+    }
+
     const authenticatedUser: AuthUser = {
       userId: response.userId,
       username: response.username,
@@ -109,6 +140,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user,
       isAuthenticated: Boolean(accessToken),
       login,
+      verifyLoginOtp,
       register,
       logout,
     }),

@@ -9,14 +9,12 @@ import { Alert } from '../../components/ui/alert'
 import { Badge } from '../../components/ui/badge'
 import { Button } from '../../components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
-import { Input } from '../../components/ui/input'
 import { PageError, PageLoading } from '../../components/ui/page-state'
 import { useCreateWalletMutation, useDepositMutation, useHistoryQuery, useWalletQuery } from '../../hooks/useDashboardData'
 import { getApiErrorMessage } from '../../utils/error'
-import { formatCurrency, formatDateTime, formatNumber } from '../../utils/format'
+import { formatCurrency, formatDateTime } from '../../utils/format'
 
 const createWalletSchema = z.object({
-  currency: z.string().min(3, 'Currency is required').max(3, 'Use 3-letter currency code'),
   seedDemoBalance: z.boolean().optional(),
 })
 
@@ -51,7 +49,6 @@ export default function WalletPage() {
   } = useForm<CreateWalletValues>({
     resolver: zodResolver(createWalletSchema),
     defaultValues: {
-      currency: 'USD',
       seedDemoBalance: false,
     },
   })
@@ -65,7 +62,7 @@ export default function WalletPage() {
     setSuccessMessage(null)
     setWarningMessage(null)
 
-    await createWalletMutation.mutateAsync({ currency: values.currency.toUpperCase() })
+    await createWalletMutation.mutateAsync({})
 
     if (values.seedDemoBalance) {
       try {
@@ -74,7 +71,7 @@ export default function WalletPage() {
           note: 'Demo starter balance',
           reference: `demo-seed-${Date.now()}`,
         })
-        setSuccessMessage('Wallet created and funded with demo balance of 1000.')
+        setSuccessMessage(`Wallet created and funded with demo balance of ${formatCurrency(1000)}.`)
       } catch {
         setSuccessMessage('Wallet created successfully.')
         setWarningMessage('Demo balance could not be applied by the backend deposit endpoint.')
@@ -84,7 +81,6 @@ export default function WalletPage() {
     }
 
     reset({
-      currency: values.currency.toUpperCase(),
       seedDemoBalance: values.seedDemoBalance,
     })
   }
@@ -127,21 +123,20 @@ export default function WalletPage() {
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Create Your Wallet</CardTitle>
-            <CardDescription>Use a three-letter currency code to initialize your account.</CardDescription>
+            <CardDescription>Your account wallet will be initialized in INR.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="flex flex-col gap-3 sm:flex-row" onSubmit={handleSubmit(onCreateWallet)}>
-              <div className="flex-1 space-y-2">
-                <Input maxLength={3} {...register('currency')} placeholder="USD" />
-                {errors.currency ? <p className="text-xs text-destructive">{errors.currency.message}</p> : null}
-                <label className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <input type="checkbox" {...register('seedDemoBalance')} />
-                  Start with demo balance (1000) for development testing.
-                </label>
-              </div>
+            <form className="space-y-3" onSubmit={handleSubmit(onCreateWallet)}>
+              <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                <input type="checkbox" {...register('seedDemoBalance')} />
+                Start with demo balance ({formatCurrency(1000)}) for development testing.
+              </label>
+              {errors.seedDemoBalance ? <p className="text-xs text-destructive">{errors.seedDemoBalance.message}</p> : null}
+              <div className="flex justify-end">
               <Button disabled={isSubmitting || createWalletMutation.isPending || depositMutation.isPending} type="submit">
                 {(createWalletMutation.isPending || depositMutation.isPending) ? 'Creating…' : 'Create Wallet'}
               </Button>
+              </div>
             </form>
           </CardContent>
         </Card>
@@ -158,7 +153,7 @@ export default function WalletPage() {
             <CardContent className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-xl border bg-background p-4">
                 <p className="text-xs text-muted-foreground">Balance</p>
-                <p className="text-2xl font-bold">{formatCurrency(wallet.balance, wallet.currency)}</p>
+                <p className="text-2xl font-bold">{formatCurrency(wallet.balance)}</p>
               </div>
               <div className="rounded-xl border bg-background p-4">
                 <p className="text-xs text-muted-foreground">Wallet Status</p>
@@ -186,11 +181,11 @@ export default function WalletPage() {
             <CardContent className="space-y-3">
               <div className="rounded-xl border bg-background p-3">
                 <p className="text-xs text-muted-foreground">Incoming volume</p>
-                <p className="text-lg font-semibold text-emerald-600">+{formatNumber(incoming)}</p>
+                <p className="text-lg font-semibold text-emerald-600">+{formatCurrency(incoming)}</p>
               </div>
               <div className="rounded-xl border bg-background p-3">
                 <p className="text-xs text-muted-foreground">Outgoing volume</p>
-                <p className="text-lg font-semibold text-rose-600">-{formatNumber(outgoing)}</p>
+                <p className="text-lg font-semibold text-rose-600">-{formatCurrency(outgoing)}</p>
               </div>
 
               {wallet.balance <= 0 ? (

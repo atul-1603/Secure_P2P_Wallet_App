@@ -1,5 +1,5 @@
 import type { TransactionHistoryItem } from '../../types/api'
-import { formatDateTime, formatNumber } from '../../utils/format'
+import { formatCurrency, formatDateTime } from '../../utils/format'
 import { Badge } from '../ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Skeleton } from '../ui/skeleton'
@@ -49,7 +49,7 @@ export function TransactionTable({ items, loading, walletId }: TransactionTableP
                 return (
                   <TableRow key={item.transactionId}>
                     <TableCell className="font-medium">{direction}</TableCell>
-                    <TableCell>{formatNumber(item.amount)} {item.currency}</TableCell>
+                    <TableCell>{formatCurrency(item.amount)}</TableCell>
                     <TableCell>
                       <Badge variant={resolveVariant(item.status)}>{item.status}</Badge>
                     </TableCell>

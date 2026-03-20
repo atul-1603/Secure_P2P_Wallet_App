@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQueryClient } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CheckCircle2, CircleDollarSign, Sparkles } from 'lucide-react'
 import { useMemo, useState } from 'react'
@@ -12,7 +13,9 @@ import { Input } from '../../components/ui/input'
 import { PageError } from '../../components/ui/page-state'
 import { Skeleton } from '../../components/ui/skeleton'
 import { useToast } from '../../components/ui/toast'
-import { useDepositMutation, useWalletQuery } from '../../hooks/useDashboardData'
+import { useWalletQuery } from '../../hooks/useDashboardData'
+import { paymentService } from '../../services/payment.service'
+import type { CreatePaymentOrderResponse } from '../../types/api'
 import { getApiErrorMessage } from '../../utils/error'
 import { formatCurrency } from '../../utils/format'
 
@@ -23,14 +26,84 @@ const addMoneySchema = z.object({
 
 type AddMoneyValues = z.infer<typeof addMoneySchema>
 
+type RazorpayCompletionPayload = {
+  orderId: string
+  paymentId: string
+  signature: string
+}
+
 const quickAmounts = [100, 500, 1000] as const
+const razorpayCheckoutScriptSrc = 'https://checkout.razorpay.com/v1/checkout.js'
+let razorpayScriptPromise: Promise<void> | null = null
+
+function loadRazorpayCheckoutScript(): Promise<void> {
+  if (window.Razorpay) {
+    return Promise.resolve()
+  }
+
+  if (razorpayScriptPromise) {
+    return razorpayScriptPromise
+  }
+
+  razorpayScriptPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script')
+    script.src = razorpayCheckoutScriptSrc
+    script.async = true
+    script.onload = () => resolve()
+    script.onerror = () => {
+      razorpayScriptPromise = null
+      reject(new Error('Unable to load Razorpay checkout SDK'))
+    }
+    document.body.appendChild(script)
+  })
+
+  return razorpayScriptPromise
+}
+
+function openRazorpayCheckout(order: CreatePaymentOrderResponse, note?: string): Promise<RazorpayCompletionPayload> {
+  return new Promise((resolve, reject) => {
+    if (!window.Razorpay) {
+      reject(new Error('Razorpay checkout is unavailable'))
+      return
+    }
+
+    const checkout = new window.Razorpay({
+      key: order.key,
+      amount: Math.round(order.amount * 100),
+      currency: order.currency,
+      order_id: order.orderId,
+      name: 'Secure P2P Wallet',
+      description: 'Add money to wallet',
+      notes: note ? { note } : undefined,
+      handler: (response) => {
+        resolve({
+          orderId: response.razorpay_order_id,
+          paymentId: response.razorpay_payment_id,
+          signature: response.razorpay_signature,
+        })
+      },
+      modal: {
+        ondismiss: () => {
+          reject(new Error('Payment was cancelled'))
+        },
+      },
+    })
+
+    checkout.on('payment.failed', (response) => {
+      reject(new Error(response.error?.description ?? 'Payment failed'))
+    })
+
+    checkout.open()
+  })
+}
 
 export default function AddMoneyPage() {
   const walletQuery = useWalletQuery()
-  const depositMutation = useDepositMutation()
-  const { showError } = useToast()
+  const queryClient = useQueryClient()
+  const { showError, showSuccess } = useToast()
   const [confirmValues, setConfirmValues] = useState<AddMoneyValues | null>(null)
   const [successAmount, setSuccessAmount] = useState<number | null>(null)
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false)
 
   const wallet = walletQuery.data ?? null
 
@@ -52,10 +125,10 @@ export default function AddMoneyPage() {
   const amountValue = watch('amount')
 
   const pageError = useMemo(() => {
-    return [walletQuery.error, depositMutation.error]
+    return [walletQuery.error]
       .filter(Boolean)
       .map((item) => getApiErrorMessage(item, 'Unable to open Add Money'))[0]
-  }, [depositMutation.error, walletQuery.error])
+  }, [walletQuery.error])
 
   function openConfirmation(values: AddMoneyValues) {
     setConfirmValues(values)
@@ -67,20 +140,39 @@ export default function AddMoneyPage() {
       return
     }
 
+    setIsProcessingPayment(true)
+
     try {
-      await depositMutation.mutateAsync({
+      await loadRazorpayCheckoutScript()
+
+      const order = await paymentService.createOrder({
         amount: confirmValues.amount,
-        note: confirmValues.note?.trim() || undefined,
-        reference: `wallet-topup-${Date.now()}`,
       })
+
+      const checkoutResponse = await openRazorpayCheckout(order, confirmValues.note?.trim() || undefined)
+
+      const verificationResult = await paymentService.verifyPayment({
+        orderId: checkoutResponse.orderId,
+        paymentId: checkoutResponse.paymentId,
+        signature: checkoutResponse.signature,
+      })
+
+      if (verificationResult.status !== 'SUCCESS') {
+        throw new Error(verificationResult.message || 'Payment verification failed')
+      }
+
+      await queryClient.invalidateQueries({ queryKey: ['wallet', 'me'] })
+      await queryClient.invalidateQueries({ queryKey: ['transactions', 'history'] })
+
+      setSuccessAmount(confirmValues.amount)
+      setConfirmValues(null)
+      reset({ amount: 100, note: '' })
+      showSuccess('Payment successful. Wallet credited securely.')
     } catch (error) {
       showError(getApiErrorMessage(error, 'Add money failed. Please try again.'))
-      return
+    } finally {
+      setIsProcessingPayment(false)
     }
-
-    setSuccessAmount(confirmValues.amount)
-    setConfirmValues(null)
-    reset({ amount: 100, note: '' })
   }
 
   if (walletQuery.isLoading) {
@@ -122,7 +214,7 @@ export default function AddMoneyPage() {
           </p>
         </div>
 
-        <Button variant="outline" onClick={() => void walletQuery.refetch()}>
+        <Button variant="outline" onClick={() => void walletQuery.refetch()} disabled={isProcessingPayment}>
           Refresh Wallet
         </Button>
       </section>
@@ -156,7 +248,7 @@ export default function AddMoneyPage() {
             <CardContent>
               <form className="space-y-4" onSubmit={handleSubmit(openConfirmation)}>
                 <div className="space-y-1">
-                  <label className="text-sm font-medium">Amount ({wallet.currency})</label>
+                  <label className="text-sm font-medium">Amount (INR)</label>
                   <Input type="number" min="0" step="0.01" {...register('amount', { valueAsNumber: true })} />
                   {errors.amount ? <p className="text-xs text-destructive">{errors.amount.message}</p> : null}
                 </div>
@@ -168,19 +260,20 @@ export default function AddMoneyPage() {
                       type="button"
                       variant={amountValue === value ? 'default' : 'outline'}
                       onClick={() => setValue('amount', value, { shouldValidate: true })}
+                      disabled={isProcessingPayment}
                     >
-                      {formatCurrency(value, wallet.currency)}
+                      {formatCurrency(value)}
                     </Button>
                   ))}
                 </div>
 
                 <div className="space-y-1">
                   <label className="text-sm font-medium">Note (optional)</label>
-                  <Input placeholder="Monthly top-up" {...register('note')} />
+                  <Input placeholder="Monthly top-up" {...register('note')} disabled={isProcessingPayment} />
                   {errors.note ? <p className="text-xs text-destructive">{errors.note.message}</p> : null}
                 </div>
 
-                <Button type="submit" className="w-full" disabled={isSubmitting || depositMutation.isPending}>
+                <Button type="submit" className="w-full" disabled={isSubmitting || isProcessingPayment}>
                   Continue to Confirm
                 </Button>
               </form>
@@ -195,7 +288,7 @@ export default function AddMoneyPage() {
             <CardContent className="space-y-3">
               <div className="rounded-xl border bg-background p-4">
                 <p className="text-xs text-muted-foreground">Current Balance</p>
-                <p className="text-2xl font-bold">{formatCurrency(wallet.balance, wallet.currency)}</p>
+                <p className="text-2xl font-bold">{formatCurrency(wallet.balance)}</p>
               </div>
               <div className="rounded-xl border bg-background p-4 text-xs text-muted-foreground">
                 Wallet ID
@@ -225,7 +318,7 @@ export default function AddMoneyPage() {
               <p className="font-medium">Deposit successful</p>
             </div>
             <p className="mt-1 text-sm">
-              {formatCurrency(successAmount, wallet?.currency ?? 'USD')} has been added to your wallet.
+              {formatCurrency(successAmount)} has been added to your wallet.
             </p>
           </motion.div>
         ) : null}
@@ -245,7 +338,7 @@ export default function AddMoneyPage() {
                 <h2 className="text-base font-semibold">Confirm Deposit</h2>
               </div>
               <p className="text-sm text-muted-foreground">
-                You are about to add {formatCurrency(confirmValues.amount, wallet?.currency ?? 'USD')} to your wallet.
+                You are about to add {formatCurrency(confirmValues.amount)} to your wallet.
               </p>
 
               {confirmValues.note ? (
@@ -255,11 +348,11 @@ export default function AddMoneyPage() {
               ) : null}
 
               <div className="mt-5 flex justify-end gap-2">
-                <Button type="button" variant="outline" onClick={() => setConfirmValues(null)} disabled={depositMutation.isPending}>
+                <Button type="button" variant="outline" onClick={() => setConfirmValues(null)} disabled={isProcessingPayment}>
                   Cancel
                 </Button>
-                <Button type="button" onClick={() => void confirmDeposit()} disabled={depositMutation.isPending}>
-                  {depositMutation.isPending ? 'Depositing…' : 'Confirm Deposit'}
+                <Button type="button" onClick={() => void confirmDeposit()} disabled={isProcessingPayment}>
+                  {isProcessingPayment ? 'Processing…' : 'Pay Securely'}
                 </Button>
               </div>
             </motion.div>

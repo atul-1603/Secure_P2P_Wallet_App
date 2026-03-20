@@ -17,4 +17,7 @@ public interface WalletRepository extends JpaRepository<Wallet, UUID> {
 
     @Query(value = "SELECT * FROM wallets WHERE id = :walletId FOR UPDATE", nativeQuery = true)
     Optional<Wallet> findByIdForUpdate(@Param("walletId") UUID walletId);
+
+    @Query(value = "SELECT * FROM wallets WHERE id = :walletId FOR UPDATE NOWAIT", nativeQuery = true)
+    Optional<Wallet> findByIdForUpdateNoWait(@Param("walletId") UUID walletId);
 }
