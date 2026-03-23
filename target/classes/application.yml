@@ -2,13 +2,13 @@ spring:
   application:
     name: p2p-wallet
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:wallet_db}}
-    username: ${DATABASE_USERNAME:${DB_USER:wallet_user}}
-    password: ${DATABASE_PASSWORD:${DB_PASS:wallet_pass}}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
-      maximum-pool-size: 15
-      minimum-idle: 3
+      maximum-pool-size: 5
+      minimum-idle: 1
       connection-timeout: 30000
       pool-name: WalletDBPool
   jpa:
@@ -46,6 +46,9 @@ spring:
       max-file-size: 25MB
       max-request-size: 25MB
 
+server:
+  port: ${PORT:10000}
+
 mail:
   from: ${MAIL_FROM:${SMTP_USERNAME:no-reply@wallet.local}}
 
@@ -82,3 +85,21 @@ withdrawal:
     core-pool-size: ${WITHDRAWAL_PROCESSING_CORE_POOL_SIZE:2}
     max-pool-size: ${WITHDRAWAL_PROCESSING_MAX_POOL_SIZE:4}
     queue-capacity: ${WITHDRAWAL_PROCESSING_QUEUE_CAPACITY:100}
+
+ai:
+  provider: ${AI_PROVIDER:GEMINI}
+  rate-limit:
+    per-minute: ${AI_RATE_LIMIT_PER_MINUTE:30}
+  openai:
+    api-key: ${OPENAI_API_KEY:}
+    model: ${OPENAI_MODEL:gpt-4o-mini}
+    url: ${OPENAI_URL:https://api.openai.com/v1/chat/completions}
+  gemini:
+    api-key: ${GEMINI_API_KEY:}
+    model: ${GEMINI_MODEL:gemini-2.5-flash}
+    url: ${GEMINI_URL:https://generativelanguage.googleapis.com/v1beta/models}
+
+logging:
+  level:
+    org.springframework: INFO
+    com.yourapp: DEBUG

@@ -4,9 +4,27 @@ target/
 *.class
 *.war
 
+# Environment Variables
+.env
+.env.local
+.env.*.local
+*.env
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
 # Tools and Binaries
 .tools/
 apache-maven-*/
+
+# Frontend specific (if not handled by frontend/.gitignore)
+**/node_modules/
+**/dist/
+**/.env
+**/.env.local
 
 # Environment variables (Secrets)
 .env
@@ -26,3 +44,5 @@ node_modules/
 dist/
 dist-ssr/
 build/
+
+application.yml
