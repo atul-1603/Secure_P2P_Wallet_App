@@ -16,7 +16,7 @@ import com.wallet.app.dto.FileUploadResponse;
 import com.wallet.app.service.FileStorageService;
 
 @RestController
-@RequestMapping("/files")
+@RequestMapping({"/api/files", "/files"})
 public class FileController {
 
     private static final long MAX_FILE_SIZE = 25 * 1024 * 1024;

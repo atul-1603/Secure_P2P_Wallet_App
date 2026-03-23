@@ -24,7 +24,7 @@ import com.wallet.app.service.ContactService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/contacts")
+@RequestMapping({"/api/contacts", "/contacts"})
 public class ContactController {
 
     private final ContactService contactService;

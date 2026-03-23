@@ -17,7 +17,7 @@ import com.wallet.app.service.PaymentService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/payments")
+@RequestMapping({"/api/payments", "/payments"})
 public class PaymentController {
 
     private final PaymentService paymentService;

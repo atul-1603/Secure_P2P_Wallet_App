@@ -14,7 +14,7 @@ import com.wallet.app.dto.UserSearchItemResponse;
 import com.wallet.app.service.UserSearchService;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping({"/api/users", "/users"})
 public class UserSearchController {
 
     private final UserSearchService userSearchService;

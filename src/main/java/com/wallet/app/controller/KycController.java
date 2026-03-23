@@ -21,7 +21,7 @@ import com.wallet.app.service.KycService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/kyc")
+@RequestMapping({"/api/kyc", "/kyc"})
 public class KycController {
 
     private final KycService kycService;

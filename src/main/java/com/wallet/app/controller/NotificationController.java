@@ -16,7 +16,7 @@ import com.wallet.app.dto.NotificationsResponse;
 import com.wallet.app.service.NotificationService;
 
 @RestController
-@RequestMapping("/notifications")
+@RequestMapping({"/api/notifications", "/notifications"})
 public class NotificationController {
 
     private final NotificationService notificationService;

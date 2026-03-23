@@ -29,7 +29,7 @@ import com.wallet.app.service.ProfileService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/profile")
+@RequestMapping({"/api/profile", "/profile"})
 public class ProfileController {
 
     private final ProfileService profileService;

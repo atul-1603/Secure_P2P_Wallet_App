@@ -18,7 +18,7 @@ import com.wallet.app.service.WithdrawalService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping
+@RequestMapping({"", "/api"})
 public class WithdrawalController {
 
     private final WithdrawalService withdrawalService;

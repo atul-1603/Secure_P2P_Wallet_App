@@ -16,7 +16,7 @@ import com.wallet.app.service.UserPreferencesService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/preferences")
+@RequestMapping({"/api/preferences", "/preferences"})
 public class UserPreferencesController {
 
     private final UserPreferencesService userPreferencesService;
