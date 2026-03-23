@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -28,6 +29,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
+    @Async
     public void sendEmailVerificationOtp(String recipientEmail, String otpCode, long expiresInMinutes) {
         sendOtpMessage(
             recipientEmail,
@@ -39,6 +41,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
+    @Async
     public void sendLoginOtp(String recipientEmail, String otpCode, long expiresInMinutes) {
         sendOtpMessage(
             recipientEmail,
