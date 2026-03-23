@@ -1,10 +1,18 @@
 import axios from 'axios'
 import { tokenStore } from './tokenStore'
 
-const baseURL = import.meta.env.VITE_API_BASE_URL ?? '/api'
+export const API_URL = (import.meta.env.VITE_API_URL ?? '').trim().replace(/\/+$/, '')
+
+if (!API_URL) {
+  throw new Error('Missing VITE_API_URL environment variable')
+}
+
+if (import.meta.env.DEV) {
+  console.log('API URL:', import.meta.env.VITE_API_URL)
+}
 
 export const apiClient = axios.create({
-  baseURL,
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -13,6 +21,11 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use((config) => {
   const accessToken = tokenStore.getAccessToken()
+  const requestPath = config.url ?? ''
+
+  if (typeof requestPath === 'string' && requestPath.startsWith('/') && !requestPath.startsWith('/api/')) {
+    config.url = `/api${requestPath}`
+  }
 
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`

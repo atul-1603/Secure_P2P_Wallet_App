@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import SockJS from 'sockjs-client'
 import { useAuth } from '../auth/AuthContext'
 import { notificationService } from '../services/notification.service'
+import { API_URL } from '../services/apiClient'
 import { tokenStore } from '../services/tokenStore'
 import type { NotificationResponse, NotificationSocketEvent } from '../types/api'
 import { useToast } from '../components/ui/toast'
@@ -129,7 +130,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     }
 
     const client = new Client({
-      webSocketFactory: () => new SockJS('/api/ws'),
+      webSocketFactory: () => new SockJS(`${API_URL}/api/ws`),
       connectHeaders: {
         Authorization: `Bearer ${token}`,
       },

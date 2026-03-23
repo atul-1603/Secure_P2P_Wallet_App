@@ -56,5 +56,4 @@ npm run dev
 ```
 
 Default frontend URL: `http://localhost:4173`  
-Default frontend API base URL: `/api`  
-Default dev proxy target: `http://localhost:8080`
+Default frontend API URL: `http://localhost:8080`
