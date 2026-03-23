@@ -93,3 +93,7 @@ logging:
   level:
     org.springframework: INFO
     com.yourapp: DEBUG
+
+  main:
+    lazy-initialization: true
+    
