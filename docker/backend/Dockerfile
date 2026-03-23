@@ -21,8 +21,8 @@ RUN apt-get update \
 
 COPY --from=builder --chown=app:app /workspace/target/*.jar /app/app.jar
 
-EXPOSE 8080
+EXPOSE 10000
 
 USER app
 
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["sh", "-c", "java -jar /app/app.jar --server.port=${PORT:-10000}"]
