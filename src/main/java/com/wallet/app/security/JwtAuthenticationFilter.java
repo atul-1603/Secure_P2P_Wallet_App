@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final Set<String> PUBLIC_AUTH_PATH_PREFIXES = Set.of("/auth/", "/api/auth/");
+    private static final Set<String> PUBLIC_AUTH_PATH_PREFIXES = Set.of("/auth", "/auth/", "/api/auth", "/api/auth/");
 
     private final JwtTokenProvider jwtTokenProvider;
 
