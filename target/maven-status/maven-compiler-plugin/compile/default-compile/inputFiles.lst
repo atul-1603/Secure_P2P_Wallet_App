@@ -3,6 +3,7 @@
 /home/atuld_1603/Documents/NEW_Secure_P2P_Wallet_App/src/main/java/com/wallet/app/dto/CreateBankAccountRequest.java
 /home/atuld_1603/Documents/NEW_Secure_P2P_Wallet_App/src/main/java/com/wallet/app/dto/AuthResponse.java
 /home/atuld_1603/Documents/NEW_Secure_P2P_Wallet_App/src/main/java/com/wallet/app/dto/NotificationResponse.java
+/home/atuld_1603/Documents/NEW_Secure_P2P_Wallet_App/src/main/java/com/wallet/app/service/SendGridEmailService.java
 /home/atuld_1603/Documents/NEW_Secure_P2P_Wallet_App/src/main/java/com/wallet/app/controller/FileController.java
 /home/atuld_1603/Documents/NEW_Secure_P2P_Wallet_App/src/main/java/com/wallet/app/service/NotificationServiceImpl.java
 /home/atuld_1603/Documents/NEW_Secure_P2P_Wallet_App/src/main/java/com/wallet/app/service/BankAccountService.java
@@ -11,6 +12,7 @@
 /home/atuld_1603/Documents/NEW_Secure_P2P_Wallet_App/src/main/java/com/wallet/app/entity/Notification.java
 /home/atuld_1603/Documents/NEW_Secure_P2P_Wallet_App/src/main/java/com/wallet/app/repository/PaymentRepository.java
 /home/atuld_1603/Documents/NEW_Secure_P2P_Wallet_App/src/main/java/com/wallet/app/security/JwtAuthenticationFilter.java
+/home/atuld_1603/Documents/NEW_Secure_P2P_Wallet_App/src/main/java/com/wallet/app/config/CorsConfig.java
 /home/atuld_1603/Documents/NEW_Secure_P2P_Wallet_App/src/main/java/com/wallet/app/service/BankAccountServiceImpl.java
 /home/atuld_1603/Documents/NEW_Secure_P2P_Wallet_App/src/main/java/com/wallet/app/dto/package-info.java
 /home/atuld_1603/Documents/NEW_Secure_P2P_Wallet_App/src/main/java/com/wallet/app/config/package-info.java

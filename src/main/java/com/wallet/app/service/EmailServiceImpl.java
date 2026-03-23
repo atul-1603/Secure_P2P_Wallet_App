@@ -2,10 +2,6 @@ package com.wallet.app.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -14,22 +10,13 @@ public class EmailServiceImpl implements EmailService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailServiceImpl.class);
 
-    private final JavaMailSender mailSender;
-    private final String configuredFromAddress;
-    private final String smtpUsername;
+    private final SendGridEmailService sendGridEmailService;
 
-    public EmailServiceImpl(
-        JavaMailSender mailSender,
-        @Value("${mail.from:}") String configuredFromAddress,
-        @Value("${spring.mail.username:${SMTP_USERNAME:}}") String smtpUsername
-    ) {
-        this.mailSender = mailSender;
-        this.configuredFromAddress = configuredFromAddress;
-        this.smtpUsername = smtpUsername;
+    public EmailServiceImpl(SendGridEmailService sendGridEmailService) {
+        this.sendGridEmailService = sendGridEmailService;
     }
 
     @Override
-    @Async
     public void sendEmailVerificationOtp(String recipientEmail, String otpCode, long expiresInMinutes) {
         sendOtpMessage(
             recipientEmail,
@@ -41,7 +28,6 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    @Async
     public void sendLoginOtp(String recipientEmail, String otpCode, long expiresInMinutes) {
         sendOtpMessage(
             recipientEmail,
@@ -78,43 +64,8 @@ public class EmailServiceImpl implements EmailService {
             Secure P2P Wallet Security Team
             """.formatted(title, otpCode, expiresInMinutes);
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(resolveFromAddress());
-        message.setTo(normalizedRecipient);
-        message.setSubject(subject);
-        message.setText(body);
-
         LOGGER.info("Sending OTP mail '{}' to {}", title, normalizedRecipient);
-        mailSender.send(message);
+        sendGridEmailService.sendEmail(normalizedRecipient, subject, body);
         LOGGER.info("OTP mail '{}' sent to {}", title, normalizedRecipient);
-    }
-
-    private String resolveFromAddress() {
-        String normalizedConfiguredFrom = configuredFromAddress == null ? "" : configuredFromAddress.trim();
-        String normalizedSmtpUsername = smtpUsername == null ? "" : smtpUsername.trim();
-
-        if (!StringUtils.hasText(normalizedConfiguredFrom)) {
-            if (!StringUtils.hasText(normalizedSmtpUsername)) {
-                return "no-reply@wallet.local";
-            }
-            return normalizedSmtpUsername;
-        }
-
-        if (isGmailSmtpUser(normalizedSmtpUsername)
-            && StringUtils.hasText(normalizedSmtpUsername)
-            && !normalizedConfiguredFrom.equalsIgnoreCase(normalizedSmtpUsername)) {
-            LOGGER.warn(
-                "Configured MAIL_FROM '{}' differs from Gmail SMTP user '{}'; using SMTP user as sender for reliable delivery",
-                normalizedConfiguredFrom,
-                normalizedSmtpUsername
-            );
-            return normalizedSmtpUsername;
-        }
-
-        return normalizedConfiguredFrom;
-    }
-
-    private boolean isGmailSmtpUser(String username) {
-        return StringUtils.hasText(username) && username.toLowerCase().endsWith("@gmail.com");
     }
 }
