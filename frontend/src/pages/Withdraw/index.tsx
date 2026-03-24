@@ -405,14 +405,14 @@ export default function WithdrawPage() {
       <AnimatePresence>
         {addBankModalOpen ? (
           <motion.div
-            className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 p-4"
+            className="fixed inset-0 z-40 flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="w-full max-w-lg rounded-2xl border bg-card p-6 shadow-fintech"
-              initial={{ opacity: 0, y: 12, scale: 0.96 }}
+              className="w-full max-w-lg rounded-t-2xl border bg-card p-4 shadow-fintech sm:rounded-2xl sm:p-6"
+              initial={{ opacity: 0, y: 18, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.98 }}
             >
@@ -441,11 +441,11 @@ export default function WithdrawPage() {
                   {addBankErrors.bankName ? <p className="text-xs text-destructive">{addBankErrors.bankName.message}</p> : null}
                 </div>
 
-                <div className="mt-4 flex justify-end gap-2">
-                  <Button type="button" variant="outline" onClick={() => setAddBankModalOpen(false)}>
+                <div className="mt-4 grid grid-cols-1 gap-2 sm:flex sm:justify-end">
+                  <Button type="button" className="h-12" variant="outline" onClick={() => setAddBankModalOpen(false)}>
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={addBankAccountMutation.isPending || isAddingBankSubmitting}>
+                  <Button className="h-12" type="submit" disabled={addBankAccountMutation.isPending || isAddingBankSubmitting}>
                     {addBankAccountMutation.isPending ? 'Saving...' : 'Save Account'}
                   </Button>
                 </div>

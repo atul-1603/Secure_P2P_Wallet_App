@@ -103,12 +103,12 @@ export default function WalletPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
     >
-      <section className="flex flex-wrap items-center justify-between gap-3">
+      <section className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-semibold">Wallet</h1>
+          <h1 className="text-xl font-semibold sm:text-2xl">Wallet</h1>
           <p className="text-sm text-muted-foreground">View account details, status, and wallet-level metrics.</p>
         </div>
-        <Button variant="outline" onClick={() => {
+        <Button className="w-full sm:w-auto" variant="outline" onClick={() => {
           void walletQuery.refetch()
           void historyQuery.refetch()
         }}>
@@ -133,7 +133,7 @@ export default function WalletPage() {
               </label>
               {errors.seedDemoBalance ? <p className="text-xs text-destructive">{errors.seedDemoBalance.message}</p> : null}
               <div className="flex justify-end">
-              <Button disabled={isSubmitting || createWalletMutation.isPending || depositMutation.isPending} type="submit">
+              <Button className="h-12 w-full sm:w-auto" disabled={isSubmitting || createWalletMutation.isPending || depositMutation.isPending} type="submit">
                 {(createWalletMutation.isPending || depositMutation.isPending) ? 'Creating…' : 'Create Wallet'}
               </Button>
               </div>
@@ -191,7 +191,7 @@ export default function WalletPage() {
               {wallet.balance <= 0 ? (
                 <div className="rounded-xl border border-dashed bg-muted/30 p-3 text-xs">
                   <p className="mb-2 font-medium">Your wallet is empty.</p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap">
                     <Button asChild size="sm">
                       <Link to="/add-money">Add Money</Link>
                     </Button>

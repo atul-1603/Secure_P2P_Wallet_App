@@ -33,14 +33,14 @@ export default function NotificationsPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
     >
-      <section className="flex flex-wrap items-center justify-between gap-3">
+      <section className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-semibold">Notifications</h1>
+          <h1 className="text-xl font-semibold sm:text-2xl">Notifications</h1>
           <p className="text-sm text-muted-foreground">Realtime alert center with persisted history.</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="grid w-full grid-cols-1 gap-2 sm:flex sm:w-auto sm:items-center">
           <Badge variant="outline">Unread: {unreadCount}</Badge>
-          <Button variant="outline" onClick={() => void markAllAsRead()} disabled={unreadCount === 0}>
+          <Button className="h-11 sm:h-10" variant="outline" onClick={() => void markAllAsRead()} disabled={unreadCount === 0}>
             Mark all read
           </Button>
         </div>
@@ -54,12 +54,13 @@ export default function NotificationsPage() {
           </div>
           <CardDescription>View alerts by category.</CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-wrap gap-2">
+        <CardContent className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap">
           {(['ALL', 'TRANSACTIONS', 'SECURITY'] as const).map((value) => (
             <Button
               key={value}
               variant={filter === value ? 'default' : 'outline'}
               size="sm"
+              className="h-10"
               onClick={() => setFilter(value)}
             >
               {value}

@@ -242,14 +242,14 @@ export default function SendMoneyPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
     >
-      <section className="flex flex-wrap items-center justify-between gap-3">
+      <section className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-semibold">Send Money</h1>
+          <h1 className="text-xl font-semibold sm:text-2xl">Send Money</h1>
           <p className="text-sm text-muted-foreground">
             Select from contacts or enter recipient email for secure payments.
           </p>
         </div>
-        <Button variant="outline" onClick={() => {
+        <Button className="w-full sm:w-auto" variant="outline" onClick={() => {
           void walletQuery.refetch()
           void contactsQuery.refetch()
         }}>
@@ -296,6 +296,7 @@ export default function SendMoneyPage() {
                       key={contact.id}
                       variant="outline"
                       size="sm"
+                      className="min-h-10"
                       onClick={() => selectContact(contact)}
                     >
                       {contact.contactName}
@@ -418,7 +419,7 @@ export default function SendMoneyPage() {
                   />
                 </div>
 
-                <Button className="w-full" onClick={() => void submitTransfer()} disabled={transferMutation.isPending}>
+                <Button className="h-12 w-full rounded-xl" onClick={() => void submitTransfer()} disabled={transferMutation.isPending}>
                   {transferMutation.isPending ? 'Sending…' : 'Send Money'}
                 </Button>
               </CardContent>

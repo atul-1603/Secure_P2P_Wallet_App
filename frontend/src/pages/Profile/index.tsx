@@ -400,7 +400,7 @@ export default function ProfilePage() {
       <Card className="overflow-hidden border-0 bg-gradient-to-r from-sky-500/20 via-cyan-500/5 to-emerald-500/15">
         <CardContent className="space-y-3 p-6">
           <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Fintech profile center</p>
-          <h1 className="text-2xl font-semibold">Manage your account with clarity</h1>
+          <h1 className="text-xl font-semibold sm:text-2xl">Manage your account with clarity</h1>
           <p className="max-w-2xl text-sm text-muted-foreground">
             Your profile is organized into focused sections so identity, security, verification, and preferences stay clean and actionable.
           </p>
@@ -408,8 +408,8 @@ export default function ProfilePage() {
       </Card>
 
       <div className="grid gap-6 lg:grid-cols-[270px_minmax(0,1fr)]">
-        <Card className="h-fit">
-          <CardContent className="space-y-2 p-3">
+        <Card className="h-fit overflow-hidden">
+          <CardContent className="flex gap-2 overflow-x-auto p-3 lg:block lg:space-y-2 lg:overflow-visible">
             {SECTIONS.map((section) => {
               const Icon = section.icon
               const isActive = activeSection === section.key
@@ -421,7 +421,7 @@ export default function ProfilePage() {
                   whileTap={{ scale: 0.99 }}
                   type="button"
                   onClick={() => selectSection(section.key)}
-                  className={`w-full rounded-xl border px-3 py-3 text-left transition ${
+                  className={`min-w-[220px] rounded-xl border px-3 py-3 text-left transition lg:w-full lg:min-w-0 ${
                     isActive
                       ? 'border-primary/40 bg-primary/10 shadow-sm'
                       : 'border-transparent bg-transparent hover:border-border hover:bg-accent/50'

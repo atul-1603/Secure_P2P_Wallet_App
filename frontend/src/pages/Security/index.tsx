@@ -83,7 +83,7 @@ export default function SecurityPage() {
       transition={{ duration: 0.25 }}
     >
       <section>
-        <h1 className="text-2xl font-semibold">Security</h1>
+        <h1 className="text-xl font-semibold sm:text-2xl">Security</h1>
         <p className="text-sm text-muted-foreground">
           Review account protection settings and monitor security posture.
         </p>
@@ -143,7 +143,7 @@ export default function SecurityPage() {
                 onChange={(event) => setNewPassword(event.target.value)}
               />
             </div>
-            <Button className="w-full" onClick={() => void handlePasswordChange()} disabled={changePasswordMutation.isPending}>
+            <Button className="h-12 w-full rounded-xl" onClick={() => void handlePasswordChange()} disabled={changePasswordMutation.isPending}>
               <KeyRound className="mr-1 h-4 w-4" />
               {changePasswordMutation.isPending ? 'Updating…' : 'Change Password'}
             </Button>
@@ -171,14 +171,14 @@ export default function SecurityPage() {
               </div>
             ))}
             <Button
-              className="w-full"
+              className="h-12 w-full"
               onClick={() => void toggleTwoFactor(true)}
               disabled={updateSecurityMutation.isPending || profile.twoFactorEnabled}
             >
               Enable 2FA
             </Button>
             <Button
-              className="w-full"
+              className="h-12 w-full"
               variant="outline"
               onClick={() => void toggleTwoFactor(false)}
               disabled={updateSecurityMutation.isPending || !profile.twoFactorEnabled}

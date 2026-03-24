@@ -38,7 +38,7 @@ export function TopNav({ username, onLogout, onToggleSidebar }: TopNavProps) {
   const latest = useMemo(() => notifications.slice(0, 8), [notifications])
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b bg-background/90 px-4 backdrop-blur lg:px-8">
+    <header className="sticky top-0 z-20 flex min-h-16 items-center justify-between border-b bg-background/90 px-3 py-2 backdrop-blur sm:px-4 lg:px-8">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Menu" onClick={onToggleSidebar}>
           <Menu className="h-5 w-5" />
@@ -49,7 +49,7 @@ export function TopNav({ username, onLogout, onToggleSidebar }: TopNavProps) {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 sm:gap-4">
+      <div className="flex items-center gap-1.5 sm:gap-3">
         <ThemeToggle variant="ghost" />
         <div className="relative">
           <Button variant="ghost" size="icon" aria-label="Notifications" onClick={() => setOpen((value) => !value)}>
@@ -64,7 +64,7 @@ export function TopNav({ username, onLogout, onToggleSidebar }: TopNavProps) {
           <AnimatePresence>
             {open ? (
               <motion.div
-                className="absolute right-0 z-50 mt-2 w-[360px] rounded-2xl border bg-card p-3 shadow-fintech"
+                className="absolute right-0 z-50 mt-2 w-[min(22rem,calc(100vw-1.25rem))] rounded-2xl border bg-card p-3 shadow-fintech"
                 initial={{ opacity: 0, y: 8, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 6, scale: 0.98 }}
@@ -87,7 +87,7 @@ export function TopNav({ username, onLogout, onToggleSidebar }: TopNavProps) {
                     No notifications yet.
                   </div>
                 ) : (
-                  <div className="max-h-[420px] space-y-2 overflow-auto pr-1">
+                  <div className="max-h-[22rem] space-y-2 overflow-auto pr-1">
                     {latest.map((item) => (
                       <div
                         key={item.id}
@@ -136,7 +136,7 @@ export function TopNav({ username, onLogout, onToggleSidebar }: TopNavProps) {
         </div>
         <Button variant="outline" size="sm" onClick={onLogout}>
           <LogOut className="mr-1 h-4 w-4" />
-          Logout
+          <span className="hidden sm:inline">Logout</span>
         </Button>
       </div>
     </header>

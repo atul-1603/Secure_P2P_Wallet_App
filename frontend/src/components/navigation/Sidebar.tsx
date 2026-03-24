@@ -51,7 +51,7 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
 
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-30 w-72 border-r bg-white/90 px-4 py-6 backdrop-blur transition-transform lg:static lg:z-auto lg:block lg:w-64 lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-30 w-[86vw] max-w-72 border-r bg-card/95 px-4 py-5 backdrop-blur transition-transform lg:static lg:z-auto lg:block lg:w-64 lg:translate-x-0 lg:py-6',
           mobileOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >

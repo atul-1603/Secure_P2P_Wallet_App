@@ -112,7 +112,7 @@ export default function SettingsPage() {
       transition={{ duration: 0.25 }}
     >
       <section>
-        <h1 className="text-2xl font-semibold">Settings</h1>
+        <h1 className="text-xl font-semibold sm:text-2xl">Settings</h1>
         <p className="text-sm text-muted-foreground">Manage interface preferences and operational alerts.</p>
       </section>
 
@@ -209,7 +209,7 @@ export default function SettingsPage() {
           <CardDescription>Modern card-based UI is active using Tailwind and shared design tokens.</CardDescription>
         </CardHeader>
         <CardContent className="flex justify-end">
-          <Button onClick={() => void savePreferences()} disabled={saving}>
+          <Button className="h-12 w-full sm:w-auto" onClick={() => void savePreferences()} disabled={saving}>
             <Save className="mr-1 h-4 w-4" />
             {saving ? 'Saving…' : 'Save Preferences'}
           </Button>

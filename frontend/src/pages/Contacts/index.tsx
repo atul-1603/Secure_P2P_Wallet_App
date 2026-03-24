@@ -111,9 +111,9 @@ export default function ContactsPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
     >
-      <section className="flex flex-wrap items-center justify-between gap-3">
+      <section className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-semibold">Contacts</h1>
+          <h1 className="text-xl font-semibold sm:text-2xl">Contacts</h1>
           <p className="text-sm text-muted-foreground">Manage saved payment contacts for quick transfers.</p>
         </div>
       </section>
@@ -139,7 +139,7 @@ export default function ContactsPage() {
             ) : (
               <div className="space-y-3">
                 {contacts.map((contact) => (
-                  <div key={contact.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-background p-3">
+                  <div key={contact.id} className="flex flex-col gap-3 rounded-xl border bg-background p-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted text-sm font-semibold uppercase">
                         {contact.contactName.charAt(0)}
@@ -150,14 +150,15 @@ export default function ContactsPage() {
                         <p className="text-xs text-muted-foreground">Added {formatDateTime(contact.createdAt)}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm" onClick={() => startEdit(contact)}>
+                    <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:items-center">
+                      <Button variant="outline" size="sm" className="h-10" onClick={() => startEdit(contact)}>
                         <Pencil className="mr-1 h-3.5 w-3.5" />
                         Edit
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
+                        className="h-10"
                         onClick={() => void handleDelete(contact.id)}
                         disabled={deleteContactMutation.isPending}
                       >
@@ -203,11 +204,11 @@ export default function ContactsPage() {
               <Alert>Provide a non-empty name and a valid email.</Alert>
             ) : null}
 
-            <Button className="w-full" onClick={() => void handleSubmit()} disabled={actionLoading || !canSubmit}>
+            <Button className="h-12 w-full rounded-xl" onClick={() => void handleSubmit()} disabled={actionLoading || !canSubmit}>
               {actionLoading ? 'Saving…' : editingContact ? 'Update Contact' : 'Add Contact'}
             </Button>
             {editingContact ? (
-              <Button className="w-full" variant="outline" onClick={resetForm} disabled={actionLoading}>
+              <Button className="h-12 w-full" variant="outline" onClick={resetForm} disabled={actionLoading}>
                 Cancel Edit
               </Button>
             ) : null}

@@ -97,11 +97,11 @@ export default function AnalyticsPage() {
       transition={{ duration: 0.25 }}
     >
       <section>
-        <h1 className="text-2xl font-semibold">Analytics</h1>
+        <h1 className="text-xl font-semibold sm:text-2xl">Analytics</h1>
         <p className="text-sm text-muted-foreground">Chart-driven view of transfer behavior, velocity, and status outcomes.</p>
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Card>
           <CardHeader>
             <CardDescription>Total transactions</CardDescription>

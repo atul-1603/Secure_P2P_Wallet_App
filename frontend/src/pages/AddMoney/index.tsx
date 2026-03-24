@@ -235,15 +235,15 @@ export default function AddMoneyPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
     >
-      <section className="flex flex-wrap items-center justify-between gap-3">
+      <section className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-semibold">Add Money</h1>
+          <h1 className="text-xl font-semibold sm:text-2xl">Add Money</h1>
           <p className="text-sm text-muted-foreground">
             Deposit funds into your wallet to start instant P2P transfers.
           </p>
         </div>
 
-        <Button variant="outline" onClick={() => void walletQuery.refetch()} disabled={isProcessingPayment}>
+        <Button className="w-full sm:w-auto" variant="outline" onClick={() => void walletQuery.refetch()} disabled={isProcessingPayment}>
           Refresh Wallet
         </Button>
       </section>
@@ -282,7 +282,7 @@ export default function AddMoneyPage() {
                   {errors.amount ? <p className="text-xs text-destructive">{errors.amount.message}</p> : null}
                 </div>
 
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                   {quickAmounts.map((value) => (
                     <Button
                       key={value}
@@ -302,7 +302,7 @@ export default function AddMoneyPage() {
                   {errors.note ? <p className="text-xs text-destructive">{errors.note.message}</p> : null}
                 </div>
 
-                <Button type="submit" className="w-full" disabled={isSubmitting || isProcessingPayment}>
+                <Button type="submit" className="h-12 w-full rounded-xl" disabled={isSubmitting || isProcessingPayment}>
                   Continue to Confirm
                 </Button>
               </form>
@@ -355,10 +355,10 @@ export default function AddMoneyPage() {
 
       <AnimatePresence>
         {confirmValues ? (
-          <motion.div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <motion.div className="fixed inset-0 z-40 flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <motion.div
-              className="w-full max-w-md rounded-2xl border bg-card p-6 shadow-fintech"
-              initial={{ opacity: 0, y: 12, scale: 0.96 }}
+              className="w-full max-w-md rounded-t-2xl border bg-card p-4 shadow-fintech sm:rounded-2xl sm:p-6"
+              initial={{ opacity: 0, y: 18, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.98 }}
             >
@@ -376,11 +376,11 @@ export default function AddMoneyPage() {
                 </p>
               ) : null}
 
-              <div className="mt-5 flex justify-end gap-2">
-                <Button type="button" variant="outline" onClick={() => setConfirmValues(null)} disabled={isProcessingPayment}>
+              <div className="mt-5 grid grid-cols-1 gap-2 sm:flex sm:justify-end">
+                <Button className="h-12" type="button" variant="outline" onClick={() => setConfirmValues(null)} disabled={isProcessingPayment}>
                   Cancel
                 </Button>
-                <Button type="button" onClick={() => void confirmDeposit()} disabled={isProcessingPayment}>
+                <Button className="h-12" type="button" onClick={() => void confirmDeposit()} disabled={isProcessingPayment}>
                   {isProcessingPayment ? 'Processing…' : 'Pay Securely'}
                 </Button>
               </div>

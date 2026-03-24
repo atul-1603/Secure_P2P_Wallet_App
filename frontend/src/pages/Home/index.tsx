@@ -215,7 +215,7 @@ export default function HomePage() {
           </div>
           <div className="relative mx-auto max-w-5xl">
             <div className="glass-card overflow-hidden rounded-3xl border border-slate-200 shadow-2xl dark:border-white/5">
-              <div className="flex h-[500px]">
+              <div className="flex min-h-[20rem] sm:min-h-[28rem]">
                 <div className="hidden w-64 flex-col space-y-8 border-r border-slate-200 p-6 dark:border-white/10 sm:flex">
                   <div className="space-y-4">
                     <div className="h-4 w-32 rounded bg-slate-200 dark:bg-white/10" />

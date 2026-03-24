@@ -70,9 +70,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 sm:space-y-6">
       <div>
-        <h2 className="text-xl font-semibold">Welcome back</h2>
+        <h2 className="text-lg font-semibold sm:text-xl">Welcome back</h2>
         <p className="text-sm text-muted-foreground">Sign in to manage your secure wallet.</p>
       </div>
 
@@ -91,7 +91,7 @@ export default function LoginPage() {
 
         {submitError ? <Alert>{submitError}</Alert> : null}
 
-        <Button className="w-full" type="submit" disabled={isSubmitting}>
+        <Button className="h-12 w-full rounded-xl" type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Signing in…' : 'Sign In'}
         </Button>
       </form>

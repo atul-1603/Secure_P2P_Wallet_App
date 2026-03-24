@@ -75,9 +75,9 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 sm:space-y-6">
       <div>
-        <h2 className="text-xl font-semibold">Create your account</h2>
+        <h2 className="text-lg font-semibold sm:text-xl">Create your account</h2>
         <p className="text-sm text-muted-foreground">Set up your secure wallet in under a minute.</p>
       </div>
 
@@ -108,7 +108,7 @@ export default function RegisterPage() {
 
         {submitError ? <Alert>{submitError}</Alert> : null}
 
-        <Button className="w-full" type="submit" disabled={isSubmitting}>
+        <Button className="h-12 w-full rounded-xl" type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Creating account…' : 'Create Account'}
         </Button>
       </form>

@@ -56,17 +56,17 @@ export default function DashboardPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
     >
-      <section className="flex flex-wrap items-center justify-between gap-3">
+      <section className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-semibold">Financial Overview</h1>
+          <h1 className="text-xl font-semibold sm:text-2xl">Financial Overview</h1>
           <p className="text-sm text-muted-foreground">
             High-level wallet performance with quick insight into money movement.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex w-full items-center gap-2 sm:w-auto">
           <Badge variant="outline">{wallet?.status ?? 'NO WALLET'}</Badge>
-          <Button variant="outline" onClick={() => {
+          <Button className="ml-auto sm:ml-0" variant="outline" onClick={() => {
             void walletQuery.refetch()
             void historyQuery.refetch()
           }}>
@@ -75,20 +75,20 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="grid gap-3 sm:grid-cols-3">
-        <Button asChild className="justify-start">
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <Button asChild className="h-12 justify-start">
           <Link to="/send-money">
             <ArrowRightLeft className="mr-2 h-4 w-4" />
             Send Money
           </Link>
         </Button>
-        <Button asChild variant="outline" className="justify-start">
+        <Button asChild variant="outline" className="h-12 justify-start">
           <Link to="/add-money">
             <PlusCircle className="mr-2 h-4 w-4" />
             Add Money
           </Link>
         </Button>
-        <Button asChild variant="outline" className="justify-start">
+        <Button asChild variant="outline" className="h-12 justify-start">
           <Link to="/receive">
             <ArrowUpRight className="mr-2 h-4 w-4" />
             Receive Money
@@ -181,36 +181,64 @@ export default function DashboardPage() {
               description="Send funds from the Send Money page once your wallet is created."
             />
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Direction</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Reference</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <>
+              <div className="space-y-3 md:hidden">
                 {recentTransactions.map((item) => {
                   const incomingTx = item.toWalletId === walletId
 
                   return (
-                    <TableRow key={item.transactionId}>
-                      <TableCell className="whitespace-nowrap text-muted-foreground">{formatDateTime(item.createdAt)}</TableCell>
-                      <TableCell>{incomingTx ? 'IN' : 'OUT'}</TableCell>
-                      <TableCell className={incomingTx ? 'text-emerald-600' : 'text-rose-600'}>
-                        {incomingTx ? '+' : '-'}{formatCurrency(item.amount)}
-                      </TableCell>
-                      <TableCell>
+                    <div key={item.transactionId} className="rounded-2xl border bg-background p-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <p className="text-xs text-muted-foreground">{formatDateTime(item.createdAt)}</p>
+                          <p className="mt-1 text-sm font-medium">{incomingTx ? 'Incoming transfer' : 'Outgoing transfer'}</p>
+                        </div>
                         <Badge variant="outline">{item.status}</Badge>
-                      </TableCell>
-                      <TableCell className="max-w-[180px] truncate">{item.reference || item.transactionId}</TableCell>
-                    </TableRow>
+                      </div>
+                      <div className="mt-2 flex items-end justify-between gap-2">
+                        <p className={incomingTx ? 'text-sm font-semibold text-emerald-600' : 'text-sm font-semibold text-rose-600'}>
+                          {incomingTx ? '+' : '-'}{formatCurrency(item.amount)}
+                        </p>
+                        <p className="max-w-[65%] truncate text-xs text-muted-foreground">{item.reference || item.transactionId}</p>
+                      </div>
+                    </div>
                   )
                 })}
-              </TableBody>
-            </Table>
+              </div>
+
+              <div className="hidden md:block">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Direction</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Reference</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {recentTransactions.map((item) => {
+                      const incomingTx = item.toWalletId === walletId
+
+                      return (
+                        <TableRow key={item.transactionId}>
+                          <TableCell className="whitespace-nowrap text-muted-foreground">{formatDateTime(item.createdAt)}</TableCell>
+                          <TableCell>{incomingTx ? 'IN' : 'OUT'}</TableCell>
+                          <TableCell className={incomingTx ? 'text-emerald-600' : 'text-rose-600'}>
+                            {incomingTx ? '+' : '-'}{formatCurrency(item.amount)}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{item.status}</Badge>
+                          </TableCell>
+                          <TableCell className="max-w-[180px] truncate">{item.reference || item.transactionId}</TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           )}
           <div className="mt-4 flex justify-end">
             <Button asChild variant="outline">

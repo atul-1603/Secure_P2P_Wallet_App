@@ -90,7 +90,7 @@ export default function TransactionsPage() {
       transition={{ duration: 0.25 }}
     >
       <section>
-        <h1 className="text-2xl font-semibold">Transactions</h1>
+        <h1 className="text-xl font-semibold sm:text-2xl">Transactions</h1>
         <p className="text-sm text-muted-foreground">
           Full transaction ledger with filter controls and paginated review.
         </p>
@@ -101,7 +101,7 @@ export default function TransactionsPage() {
           <CardTitle className="text-base">Filters</CardTitle>
           <CardDescription>Search by ID/reference and narrow results by status or direction.</CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div className="relative lg:col-span-2">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -116,7 +116,7 @@ export default function TransactionsPage() {
           </div>
 
           <select
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm sm:h-10"
             value={statusFilter}
             onChange={(event) => {
               setStatusFilter(event.target.value)
@@ -131,7 +131,7 @@ export default function TransactionsPage() {
           </select>
 
           <select
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm sm:h-10"
             value={directionFilter}
             onChange={(event) => {
               setDirectionFilter(event.target.value as DirectionFilter)
@@ -160,45 +160,71 @@ export default function TransactionsPage() {
             />
           ) : (
             <>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Direction</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Counterparty</TableHead>
-                    <TableHead>Reference</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {pageItems.map((item) => {
-                    const incomingTx = item.toWalletId === walletId
-                    const counterparty = incomingTx ? item.fromWalletId : item.toWalletId
+              <div className="space-y-3 md:hidden">
+                {pageItems.map((item) => {
+                  const incomingTx = item.toWalletId === walletId
+                  const counterparty = incomingTx ? item.fromWalletId : item.toWalletId
 
-                    return (
-                      <TableRow key={item.transactionId}>
-                        <TableCell className="whitespace-nowrap text-muted-foreground">{formatDateTime(item.createdAt)}</TableCell>
-                        <TableCell>{incomingTx ? 'IN' : 'OUT'}</TableCell>
-                        <TableCell className={incomingTx ? 'text-emerald-600' : 'text-rose-600'}>
-                          {incomingTx ? '+' : '-'}{formatCurrency(item.amount)}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline">{item.status}</Badge>
-                        </TableCell>
-                        <TableCell className="max-w-[180px] truncate">{counterparty}</TableCell>
-                        <TableCell className="max-w-[180px] truncate">{item.reference || item.transactionId}</TableCell>
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
+                  return (
+                    <div key={item.transactionId} className="rounded-2xl border bg-background p-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-xs text-muted-foreground">{formatDateTime(item.createdAt)}</p>
+                          <p className="mt-1 text-sm font-medium">{incomingTx ? 'Incoming' : 'Outgoing'}</p>
+                        </div>
+                        <Badge variant="outline">{item.status}</Badge>
+                      </div>
+                      <p className={incomingTx ? 'mt-2 text-sm font-semibold text-emerald-600' : 'mt-2 text-sm font-semibold text-rose-600'}>
+                        {incomingTx ? '+' : '-'}{formatCurrency(item.amount)}
+                      </p>
+                      <p className="mt-2 truncate text-xs text-muted-foreground">Counterparty: {counterparty || '-'}</p>
+                      <p className="truncate text-xs text-muted-foreground">Ref: {item.reference || item.transactionId}</p>
+                    </div>
+                  )
+                })}
+              </div>
 
-              <div className="mt-4 flex items-center justify-between">
+              <div className="hidden md:block">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Direction</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Counterparty</TableHead>
+                      <TableHead>Reference</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {pageItems.map((item) => {
+                      const incomingTx = item.toWalletId === walletId
+                      const counterparty = incomingTx ? item.fromWalletId : item.toWalletId
+
+                      return (
+                        <TableRow key={item.transactionId}>
+                          <TableCell className="whitespace-nowrap text-muted-foreground">{formatDateTime(item.createdAt)}</TableCell>
+                          <TableCell>{incomingTx ? 'IN' : 'OUT'}</TableCell>
+                          <TableCell className={incomingTx ? 'text-emerald-600' : 'text-rose-600'}>
+                            {incomingTx ? '+' : '-'}{formatCurrency(item.amount)}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{item.status}</Badge>
+                          </TableCell>
+                          <TableCell className="max-w-[180px] truncate">{counterparty}</TableCell>
+                          <TableCell className="max-w-[180px] truncate">{item.reference || item.transactionId}</TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-xs text-muted-foreground">
                   Page {page} of {totalPages}
                 </p>
-                <div className="flex gap-2">
+                <div className="grid grid-cols-2 gap-2 sm:flex sm:gap-2">
                   <Button variant="outline" disabled={page === 1} onClick={() => setPage((value) => Math.max(1, value - 1))}>
                     Previous
                   </Button>
