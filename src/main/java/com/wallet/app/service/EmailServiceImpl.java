@@ -65,6 +65,7 @@ public class EmailServiceImpl implements EmailService {
             """.formatted(title, otpCode, expiresInMinutes);
 
         LOGGER.info("Sending OTP mail '{}' to {}", title, normalizedRecipient);
+        LOGGER.info("DEVELOPMENT MODE OTP INTERCEPT - User: {}, OTP: {}", normalizedRecipient, otpCode);
         sendGridEmailService.sendEmail(normalizedRecipient, subject, body);
         LOGGER.info("OTP mail '{}' sent to {}", title, normalizedRecipient);
     }

@@ -4,6 +4,7 @@ import { Alert } from '../ui/alert'
 import { Button } from '../ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
 import { Input } from '../ui/input'
+import { API_URL } from '../../services/apiClient'
 import type { UserProfileResponse } from '../../types/api'
 
 type PersonalInformationSectionProps = {
@@ -29,6 +30,12 @@ export default function PersonalInformationSection({
   isUploadingAvatar,
   avatarValidationError,
 }: PersonalInformationSectionProps) {
+  const profileImageUrl = profile.profileImageUrl
+    ? profile.profileImageUrl.startsWith('http')
+      ? profile.profileImageUrl
+      : `${API_URL}${profile.profileImageUrl}`
+    : null
+
   return (
     <div className="space-y-6">
       <Card>
@@ -39,9 +46,9 @@ export default function PersonalInformationSection({
         <CardContent className="space-y-6">
           <div className="flex flex-col gap-4 rounded-2xl border bg-muted/20 p-4 sm:flex-row sm:items-center">
             <div className="h-20 w-20 overflow-hidden rounded-full border bg-white">
-              {avatarPreviewUrl || profile.profileImageUrl ? (
+              {avatarPreviewUrl || profileImageUrl ? (
                 <img
-                  src={avatarPreviewUrl ?? profile.profileImageUrl ?? undefined}
+                  src={avatarPreviewUrl ?? profileImageUrl ?? undefined}
                   alt="Avatar preview"
                   className="h-full w-full object-cover"
                 />

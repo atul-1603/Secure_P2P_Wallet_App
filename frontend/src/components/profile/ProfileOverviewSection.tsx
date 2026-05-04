@@ -3,6 +3,7 @@ import { BadgeCheck, IdCard, LockKeyhole, Sparkles, UserCircle2 } from 'lucide-r
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
+import { API_URL } from '../../services/apiClient'
 import type { UserProfileResponse } from '../../types/api'
 import { formatCurrency, formatDateTime } from '../../utils/format'
 
@@ -41,15 +42,21 @@ export default function ProfileOverviewSection({
   onGoToSecurity,
   onGoToKyc,
 }: ProfileOverviewSectionProps) {
+  const profileImageUrl = profile.profileImageUrl
+    ? profile.profileImageUrl.startsWith('http')
+      ? profile.profileImageUrl
+      : `${API_URL}${profile.profileImageUrl}`
+    : null
+
   return (
     <div className="space-y-6">
       <Card className="overflow-hidden border-0 bg-gradient-to-r from-cyan-500/20 via-sky-500/10 to-emerald-500/20">
         <CardContent className="p-6">
           <div className="flex flex-col gap-5 md:flex-row md:items-center">
             <div className="h-20 w-20 overflow-hidden rounded-full border-2 border-white bg-white/80 shadow">
-              {avatarPreviewUrl || profile.profileImageUrl ? (
+              {avatarPreviewUrl || profileImageUrl ? (
                 <img
-                  src={avatarPreviewUrl ?? profile.profileImageUrl ?? undefined}
+                  src={avatarPreviewUrl ?? profileImageUrl ?? undefined}
                   alt="Profile avatar"
                   className="h-full w-full object-cover"
                 />
