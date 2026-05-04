@@ -38,7 +38,8 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+          workload_identity_provider: 'projects/560215755306/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
+          service_account: 'wallet-run-sa@secure-p2p-wallet-app.iam.gserviceaccount.com'
           
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
