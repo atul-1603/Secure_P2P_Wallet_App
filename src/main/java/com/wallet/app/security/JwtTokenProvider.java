@@ -35,9 +35,9 @@ public class JwtTokenProvider {
     private SecretKey key;
 
     public JwtTokenProvider(
-        @Value("${security.jwt.secret}") String jwtSecret,
-        @Value("${security.jwt.access-token-expiration-ms}") long accessTokenExpirationMs,
-        @Value("${security.jwt.refresh-token-expiration-ms}") long refreshTokenExpirationMs
+        @Value("${security.jwt.secret:${JWT_SECRET:change-this-in-production-jwt-secret-key-minimum-32-bytes}}") String jwtSecret,
+        @Value("${security.jwt.access-token-expiration-ms:${JWT_ACCESS_TOKEN_EXPIRATION_MS:900000}}") long accessTokenExpirationMs,
+        @Value("${security.jwt.refresh-token-expiration-ms:${JWT_REFRESH_TOKEN_EXPIRATION_MS:604800000}}") long refreshTokenExpirationMs
     ) {
         this.jwtSecret = jwtSecret;
         this.accessTokenExpirationMs = accessTokenExpirationMs;
