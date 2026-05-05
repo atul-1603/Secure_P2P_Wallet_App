@@ -35,7 +35,7 @@ public class AiClient {
         @Value("${ai.openai.model:gpt-4o-mini}") String openAiModel,
         @Value("${ai.openai.url:https://api.openai.com/v1/chat/completions}") String openAiUrl,
         @Value("${ai.gemini.api-key:}") String geminiApiKey,
-        @Value("${ai.gemini.model:gemini-1.5-flash}") String geminiModel,
+        @Value("${ai.gemini.model:gemini-2.5-flash}") String geminiModel,
         @Value("${ai.gemini.url:https://generativelanguage.googleapis.com/v1beta/models}") String geminiUrl,
         ObjectMapper objectMapper
     ) {

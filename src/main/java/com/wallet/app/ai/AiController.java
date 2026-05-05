@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/ai")
+@RequestMapping({"/api/ai", "/ai"})
 public class AiController {
 
     private final AiService aiService;
