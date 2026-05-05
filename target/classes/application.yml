@@ -1,4 +1,6 @@
 spring:
+  main:
+    lazy-initialization: true
   application:
     name: p2p-wallet
   datasource:
@@ -94,8 +96,4 @@ logging:
   level:
     org.springframework: INFO
     com.yourapp: DEBUG
-
-spring:
-  main:
-    lazy-initialization: true
     
