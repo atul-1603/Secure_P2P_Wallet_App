@@ -5,7 +5,7 @@ spring:
     name: p2p-wallet
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:sqlite:wallet.db}
-    driver-class-name: org.sqlite.JDBC
+    # Spring Boot will auto-detect the driver from the JDBC URL
     # SQLite doesn't require username/password
     hikari:
       maximum-pool-size: 1
@@ -20,7 +20,6 @@ spring:
     properties:
       hibernate:
         format_sql: false
-        dialect: org.hibernate.community.dialect.SQLiteDialect # SQLite Dialect
         jdbc:
           batch_size: 50
         order_updates: true

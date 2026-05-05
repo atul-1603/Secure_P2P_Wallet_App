@@ -49,6 +49,17 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
+        <!-- PostgreSQL Database Driver and Cloud SQL Socket Factory -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.cloud.sql</groupId>
+            <artifactId>postgres-socket-factory</artifactId>
+            <version>1.22.0</version>
+        </dependency>
         <!-- SQLite Database Driver -->
         <dependency>
             <groupId>org.xerial</groupId>
